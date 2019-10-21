@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "aurora-phonelist-search-client-side-solution",
+    "id": "18e94e96-8ffa-4cc3-92d6-b01741592fb4",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/aurora-phonelist-search.sppkg"
+  }
+}
