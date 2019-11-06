@@ -24,6 +24,13 @@ export interface IPhoneListSearchWebPartProps {
     showOrganization: boolean;
     showDepartment: boolean;
     showDivision: boolean;
+    prefilter_key_department: string;
+    prefilter_key_division: string;
+    prefilter_label_department: string;
+    prefilter_label_division: string;
+    departmentOptions: Array<any>;
+    divisionOptions: Array<any>;
+    availOrganizationsObject: Array<any>;
 }
 export interface IMainAppProps {
     appHeading: string;
@@ -33,6 +40,12 @@ export interface IMainAppProps {
     showOrganization: boolean;
     showDepartment: boolean;
     showDivision: boolean;
+    prefilter_key_department: string;
+    prefilter_key_division: string;
+    prefilter_label_department: string;
+    prefilter_label_division: string;
+    departmentOptions: any;
+    divisionOptions: any;
 }
 export interface IMainAppState {
     needUpdate: boolean;
@@ -63,6 +76,12 @@ export interface IContactSearchBoxProps {
     showDepartment: boolean;
     showDivision: boolean;
     clearFilters: boolean;
+    prefilter_key_department: string;
+    prefilter_key_division: string;
+    prefilter_label_department: string;
+    prefilter_label_division: string;
+    departmentOptions: any;
+    divisionOptions: any;
 }
 export interface IContactSearchBoxState {
     searchTerms: any;
@@ -107,6 +126,7 @@ export interface IContactCardGridState {
     showOrganization: boolean;
     showDepartment: boolean;
     showDivision: boolean;
+    size: string;
 }
 export interface IContactCardProps {
     item?: any;
@@ -139,6 +159,12 @@ export interface ICommandBarSearchControlsProps {
     showPanel: boolean;
     filters: string;
     clearFilters: boolean;
+    prefilter_key_department: string;
+    prefilter_key_division: string;
+    prefilter_label_department: string;
+    prefilter_label_division: string;
+    departmentOptions: any;
+    divisionOptions: any;
 }
 export interface ICommandBarSearchControlsState {
     view?: string;
@@ -174,6 +200,12 @@ export interface IFilterPanelProps {
     showPanel: boolean;
     filters: string;
     clearFilters: boolean;
+    prefilter_key_department: string;
+    prefilter_key_division: string;
+    prefilter_label_department: string;
+    prefilter_label_division: string;
+    departmentOptions: any;
+    divisionOptions: any;
 }
 export interface IFilterPanelState {
     showPanel: boolean;
@@ -183,20 +215,10 @@ export interface IFilterPanelState {
     filtersDepartment: any;
     filtersDivision: any;
     clearFilters: boolean;
-}
-export interface IDropdownControlledMultiState {
-    selectedItems: string[];
-}
-export interface IDropdownControlledMultiProps {
-    choices?: any;
-    label: string;
-    placeholder: string;
-    onChange: any;
-}
-export declare class DropdownControlledMulti extends React.Component<IDropdownControlledMultiProps, IDropdownControlledMultiState> {
-    constructor(props: any);
-    render(): JSX.Element;
-    private _onChange;
+    prefilter_key_department?: string;
+    prefilter_key_division?: string;
+    prefilter_label_department?: string;
+    prefilter_label_division?: string;
 }
 export declare class ContactCard extends React.Component<IContactCardProps, IContactCardState> {
     constructor(props: any);
@@ -206,7 +228,6 @@ export declare class ContactCard extends React.Component<IContactCardProps, ICon
 export declare class ContactCardGrid extends React.Component<IContactCardGridProps, IContactCardGridState> {
     constructor(props: any);
     render(): JSX.Element;
-    componentDidMount(): void;
     componentDidUpdate(previousProps: IContactCardGridProps, previousState: IContactCardGridState): void;
     private _getKey;
 }
@@ -214,25 +235,13 @@ export declare class DetailsListCustomColumnsResults extends React.Component<IDe
     constructor(props: any);
     render(): JSX.Element;
     sendData: (order: any) => void;
-    componentDidMount(): void;
     componentDidUpdate(previousProps: IDetailsListCustomColumnsResultsProp, previousState: IDetailsListCustomColumnsResultsState): void;
     _renderItemColumn(item: IResult, index: number, column: IColumn, searchTerms: any): JSX.Element | "";
     private _onColumnClick;
-    private _onColumnHeaderContextMenu;
-    private _onItemInvoked;
 }
 export declare class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanelState> {
     constructor(props: any);
-    componentDidMount(): void;
     componentDidUpdate(previousProps: IFilterPanelProps, previousState: IFilterPanelState): void;
-    availOrganizations: any[];
-    availOrganizationsObject: any[];
-    availDepartments: any[];
-    availDepartmentsObject: any[];
-    availDivisions: any[];
-    availDivisionsObject: any[];
-    sortDropdowns(a: any, b: any): 1 | -1;
-    getRESTResults(): void;
     sendData: (showPanel: any, filters: any, hasFiltersOrganization: any, hasFiltersDepartment: any, hasFiltersDivision: any, clearFilters: any) => void;
     private _showPanel;
     private _hidePanel;
@@ -246,7 +255,6 @@ export declare class FilterPanel extends React.Component<IFilterPanelProps, IFil
 }
 export declare class CommandBarSearchControls extends React.Component<ICommandBarSearchControlsProps, ICommandBarSearchControlsState> {
     constructor(props: any);
-    componentDidMount(): void;
     componentDidUpdate(previousProps: ICommandBarSearchControlsProps, previousState: ICommandBarSearchControlsState): void;
     sendData: (boolVal: any, view: any, order: any, size: any, showPanel: any, filters: any, hasFiltersOrganization: any, hasFiltersDepartment: any, hasFiltersDivision: any, clearFilters: any) => void;
     handleFilterClick: () => void;
@@ -261,7 +269,6 @@ export declare class CommandBarSearchControls extends React.Component<ICommandBa
 }
 export declare class ContactSearchBox extends React.Component<IContactSearchBoxProps, IContactSearchBoxState> {
     constructor(props: any);
-    componentDidMount(): void;
     componentDidUpdate(previousProps: IContactSearchBoxProps, previousState: IContactSearchBoxState): void;
     sendData: (boolVal: any, childData: any, searchTerms: any, view: any, order: any, size: any, showPanel: any, filters: any, hasFiltersOrganization: any, hasFiltersDepartment: any, hasFiltersDivision: any, clearFilters: any) => void;
     handleChange: ((e: any) => void) & _.Cancelable;
@@ -272,14 +279,16 @@ export declare class ContactSearchBox extends React.Component<IContactSearchBoxP
 }
 export declare class MainApp extends React.Component<IMainAppProps, IMainAppState> {
     constructor(props: any);
-    componentDidMount(): void;
-    componentDidUpdate(previousProps: IMainAppProps, previousState: IMainAppState): void;
-    componentWillUnmount(): void;
     callbackFromSearchBoxToMainApp: (boolVal: any, childData: any, searchTerms: any, view: any, order: any, size: any, showPanel: any, filters: any, hasFiltersOrganization: any, hasFiltersDepartment: any, hasFiltersDivision: any, clearFilters: any) => void;
     callbackFromDetailsListToMainApp: (order: any) => void;
     render(): JSX.Element;
 }
 export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhoneListSearchWebPartProps> {
+    availOrganizations: any[];
+    private getOptionsPromise;
+    onInit(): Promise<void>;
+    sortDropdowns(a: any, b: any): 1 | -1;
+    private getOptions;
     render(): void;
     protected onDispose(): void;
     protected readonly dataVersion: Version;

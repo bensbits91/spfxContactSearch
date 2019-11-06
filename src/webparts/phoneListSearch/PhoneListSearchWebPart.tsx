@@ -2,30 +2,28 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IPropertyPaneConfiguration, PropertyPaneTextField, PropertyPaneCheckbox, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneTextField, PropertyPaneCheckbox, PropertyPaneDropdown, IPropertyPaneCustomFieldProps, IPropertyPaneField, PropertyPaneFieldType } from '@microsoft/sp-property-pane';
 
 import * as strings from 'PhoneListSearchWebPartStrings';
 import PhoneListSearch from './components/PhoneListSearch';
 import { IPhoneListSearchProps } from './components/IPhoneListSearchProps';
 
-import { ITheme, mergeStyleSets, getTheme, getFocusStyle, noWrap } from 'office-ui-fabric-react/lib/Styling';
 import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
-import { DetailsList, buildColumns, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
-import { PersonaCoin, PersonaSize } from 'office-ui-fabric-react/lib/Persona';
-import { Facepile, IFacepilePersona, IFacepileProps } from 'office-ui-fabric-react/lib/Facepile';
-import { SPHttpClient, SPHttpClientResponse, ISPHttpClientOptions } from '@microsoft/sp-http';
-import styles from './components/PhoneListSearch.module.scss';
-import { debounce } from 'lodash';
-import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
-import { Link } from 'office-ui-fabric-react/lib/Link';
+import { buildColumns, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
+import { PersonaCoin, PersonaSize } from 'office-ui-fabric-react/lib/Persona';
+import { SPHttpClient, SPHttpClientResponse, ISPHttpClientOptions } from '@microsoft/sp-http';
+import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
 
-import { graph } from "@pnp/graph";
+import styles from './components/PhoneListSearch.module.scss';
+import { Link } from 'office-ui-fabric-react/lib/Link';
 
+import { update } from '@microsoft/sp-lodash-subset';
+import { debounce } from 'lodash';
 
 
 
@@ -37,6 +35,13 @@ export interface IPhoneListSearchWebPartProps {
   showOrganization: boolean;
   showDepartment: boolean;
   showDivision: boolean;
+  prefilter_key_department: string;
+  prefilter_key_division: string;
+  prefilter_label_department: string;
+  prefilter_label_division: string;
+  departmentOptions: Array<any>;
+  divisionOptions: Array<any>;
+  availOrganizationsObject: Array<any>;
 }
 
 export interface IMainAppProps {
@@ -47,6 +52,12 @@ export interface IMainAppProps {
   showOrganization: boolean;
   showDepartment: boolean;
   showDivision: boolean;
+  prefilter_key_department: string;
+  prefilter_key_division: string;
+  prefilter_label_department: string;
+  prefilter_label_division: string;
+  departmentOptions: any;
+  divisionOptions: any;
 }
 
 export interface IMainAppState {
@@ -79,6 +90,12 @@ export interface IContactSearchBoxProps {
   showDepartment: boolean;
   showDivision: boolean;
   clearFilters: boolean;
+  prefilter_key_department: string;
+  prefilter_key_division: string;
+  prefilter_label_department: string;
+  prefilter_label_division: string;
+  departmentOptions: any;
+  divisionOptions: any;
 }
 
 export interface IContactSearchBoxState {
@@ -98,7 +115,6 @@ export interface IContactSearchBoxState {
   showDivision: boolean;
   clearFilters: boolean;
 }
-
 
 export interface IResult {
   key: string;
@@ -128,6 +144,7 @@ export interface IContactCardGridState {
   showOrganization: boolean;
   showDepartment: boolean;
   showDivision: boolean;
+  size: string;
 }
 
 export interface IContactCardProps {
@@ -165,6 +182,12 @@ export interface ICommandBarSearchControlsProps {
   showPanel: boolean;
   filters: string;
   clearFilters: boolean;
+  prefilter_key_department: string;
+  prefilter_key_division: string;
+  prefilter_label_department: string;
+  prefilter_label_division: string;
+  departmentOptions: any;
+  divisionOptions: any;
 }
 
 export interface ICommandBarSearchControlsState {
@@ -204,6 +227,12 @@ export interface IFilterPanelProps {
   showPanel: boolean;
   filters: string;
   clearFilters: boolean;
+  prefilter_key_department: string;
+  prefilter_key_division: string;
+  prefilter_label_department: string;
+  prefilter_label_division: string;
+  departmentOptions: any;
+  divisionOptions: any;
 }
 
 export interface IFilterPanelState {
@@ -214,224 +243,23 @@ export interface IFilterPanelState {
   filtersDepartment: any;
   filtersDivision: any;
   clearFilters: boolean;
+  prefilter_key_department?: string;
+  prefilter_key_division?: string;
+  prefilter_label_department?: string;
+  prefilter_label_division?: string;
 }
-
-export interface IDropdownControlledMultiState {
-  selectedItems: string[];
-}
-
-export interface IDropdownControlledMultiProps {
-  choices?: any;
-  label: string;
-  placeholder: string;
-  onChange: any;
-}
-
-
-
-const theme: ITheme = getTheme();
-const { palette, fonts } = theme;
-const classNames = mergeStyleSets({
-  fileIconHeaderIcon: {
-    padding: 0,
-    fontSize: '16px'
-  },
-  fileIconCell: {
-    textAlign: 'center',
-    selectors: {
-      '&:before': {
-        content: '.',
-        display: 'inline-block',
-        verticalAlign: 'middle',
-        height: '100%',
-        width: '0px',
-        visibility: 'hidden'
-      }
-    }
-  },
-  fileIconImg: {
-    verticalAlign: 'middle',
-    maxHeight: '16px',
-    maxWidth: '16px'
-  },
-  controlWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  exampleToggle: {
-    display: 'inline-block',
-    marginBottom: '10px',
-    marginRight: '30px'
-  },
-  selectionDetails: {
-    marginBottom: '20px'
-  },
-  listGridExample: {
-    overflow: 'hidden',
-    fontSize: 0,
-    position: 'relative'
-  },
-  listGridExampleTile: {
-    textAlign: 'center',
-    outline: 'none',
-    position: 'relative',
-    float: 'left',
-    background: palette.neutralLighter,
-    selectors: {
-      'focus:after': {
-        content: '',
-        position: 'absolute',
-        left: 2,
-        right: 2,
-        top: 2,
-        bottom: 2,
-        boxSizing: 'border-box',
-        border: `1px solid ${palette.white}`
-      }
-    }
-  },
-  listGridExampleSizer: {
-    paddingBottom: '100%'
-  },
-  listGridExamplePadder: {
-    position: 'absolute',
-    left: 2,
-    top: 2,
-    right: 2,
-    bottom: 2
-  },
-  listGridExampleLabel: {
-    background: 'rgba(0, 0, 0, 0.3)',
-    color: '#FFFFFF',
-    position: 'absolute',
-    padding: 10,
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    fontSize: fonts.small.fontSize,
-    boxSizing: 'border-box'
-  },
-  listGridExampleImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%'
-  },
-  listGridExampleContent: {
-    fontSize: 14,
-    left: 0,
-    position: 'absolute',
-    top: 0,
-    width: '100%'
-  },
-  itemCell: [
-    getFocusStyle(theme, { inset: -1 }),
-    {
-      minHeight: 54,
-      padding: 10,
-      boxSizing: 'border-box',
-      borderBottom: `1px solid #aaa`,
-      display: 'flex',
-      selectors: {
-        '&:hover': { background: palette.neutralLight }
-      }
-    }
-  ],
-  itemImage: {
-    flexShrink: 0
-  },
-  itemContent: {
-    marginLeft: 10,
-    overflow: 'hidden',
-    flexGrow: 1
-  },
-  itemName: [
-    fonts.xLarge,
-    {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    }
-  ],
-  itemIndex: {
-    fontSize: fonts.small.fontSize,
-    color: palette.neutralTertiary,
-    marginBottom: 10
-  },
-  chevron: {
-    alignSelf: 'center',
-    marginLeft: 10,
-    color: palette.neutralTertiary,
-    fontSize: fonts.large.fontSize,
-    flexShrink: 0
-  }
-});
-const controlStyles = {
-  root: {
-    margin: '0 30px 20px 0',
-    maxWidth: '300px'
-  }
-};
-const dropdownStyles: Partial<IDropdownStyles> = {
-  dropdown: { width: 300 }
-};
 
 
 let appContext;
+let availOrganizationsObject = [];
+let propPaneDepartments = [];
+let propPaneDivisions = [];
 
-
-
-export class DropdownControlledMulti extends React.Component<IDropdownControlledMultiProps, IDropdownControlledMultiState> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedItems: []
-    };
-  }
-
-  public render() {
-    const { selectedItems } = this.state;
-    let choiceObjects = [];
-    this.props.choices.map(choice => {
-      choiceObjects.push({ key: choice.split(' ').join(''), text: choice });
-    });
-    return (
-      <Dropdown
-        placeholder={this.props.placeholder}
-        label={this.props.label}
-        selectedKeys={selectedItems}
-        onChange={this._onChange}
-        multiSelect
-        options={choiceObjects}
-        styles={{ dropdown: { width: 300 } }}
-      />
-    );
-  }
-
-  private _onChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
-    const newSelectedItems = [...this.state.selectedItems];
-
-    if (item.selected) {
-      newSelectedItems.push(item.key as string);
-    } else {
-      const currIndex = newSelectedItems.indexOf(item.key as string);
-      if (currIndex > -1) {
-        newSelectedItems.splice(currIndex, 1);
-      }
-    }
-    this.setState({
-      selectedItems: newSelectedItems
-    },
-    );
-  }
-}
 
 export class ContactCard extends React.Component<IContactCardProps, IContactCardState> {
 
   constructor(props) {
     super(props);
-
     this.state = {
       item: this.props.item,
       showOrganization: this.props.showOrganization,
@@ -440,16 +268,7 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
     };
   }
 
-  // public componentDidMount() {
-  //   console.groupCollapsed('ContactCard -> componentDidMount');
-  //   console.log('props', this.props);
-  //   console.log('state', this.state);
-  //   console.groupEnd();
-  // }
-
   public componentDidUpdate(previousProps: IContactCardProps, previousState: IContactCardState) {
-    // console.groupCollapsed('ContactCard -> componentDidUpdate');
-    // console.groupEnd();
     if (previousState.item != this.props.item) {
       this.setState({ item: this.props.item }, () => {
       });
@@ -470,7 +289,6 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
 
   public render() {
     const searchTerms = this.props.searchTerms;
-
     let highlightHits = (str) => {
       for (let term of searchTerms) {
         const searchTermRegex = new RegExp(term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "ig");
@@ -481,7 +299,6 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
     };
 
     return (
-
       <div
         key={this.props.item.Id}
         className={this.props.size == 'large' ? styles.contactItem : [styles.contactItem, styles.small].join(' ')}
@@ -493,18 +310,10 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
               text={this.props.item.FirstName != null ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title}
               coinSize={this.props.size == 'large' ? 100 : 50}
               showInitialsUntilImageLoads={true}
-            // imageUrl='https://googlechrome.github.io/samples/picture-element/images/kitten-large.png'
             />
           </Link>
-          {/* <FacepileBasicExample
-            personas={[{
-              personaName: this.props.item.FirstName != null ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title,
-            }]}
-            personaSize={this.props.size == 'large' ? 100 : 50}
-          /> */}
         </div>
         <div className={styles.contactItemDetails}>
-
           <div className={styles.padBottom}>
             <Link href={"https://delve-gcc.office.com/?p=" + this.props.item.Email + "&v=work"} target="about:blank">
               <div className={[styles.contactItemFullName, styles.contactItemFieldBody].join(' ')}
@@ -519,7 +328,6 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
               : ''
             }
           </div>
-
           <div className={styles.padBottom}>
             {this.props.item.Organization != null && this.state.showOrganization
               ? <div className={styles.contactItemFieldBody}
@@ -566,9 +374,7 @@ export class ContactCard extends React.Component<IContactCardProps, IContactCard
             : ''
           }
         </div>
-
       </div>
-
     );
   }
 
@@ -578,12 +384,12 @@ export class ContactCardGrid extends React.Component<IContactCardGridProps, ICon
 
   constructor(props) {
     super(props);
-
     this.state = {
       items: this.props.items,
       showOrganization: this.props.showOrganization,
       showDepartment: this.props.showDepartment,
-      showDivision: this.props.showDivision
+      showDivision: this.props.showDivision,
+      size: this.props.size
     };
   }
 
@@ -606,23 +412,9 @@ export class ContactCardGrid extends React.Component<IContactCardGridProps, ICon
     );
   }
 
-  public componentDidMount() {
-    console.groupCollapsed('ContactCardGrid -> componentDidMount');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
   public componentDidUpdate(previousProps: IContactCardGridProps, previousState: IContactCardGridState) {
-    console.groupCollapsed('ContactCardGrid -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
     if (previousState.items != this.props.items) {
-      this.setState({ items: this.props.items }, () => {
-      });
+      this.setState({ items: this.props.items });
     }
   }
 
@@ -658,7 +450,6 @@ export class DetailsListCustomColumnsResults extends React.Component<IDetailsLis
         : column.fieldName == 'Title' ? 'Last Name'
           : column.fieldName.replace(/([A-Z])/g, ' $1').trim();
     });
-    console.log('DetailsListCustomColumnsResults -> render -> columns', columns);
 
     return (
       <ShimmeredDetailsList
@@ -667,8 +458,6 @@ export class DetailsListCustomColumnsResults extends React.Component<IDetailsLis
         columns={columns}
         onRenderItemColumn={this._renderItemColumn}
         onColumnHeaderClick={this._onColumnClick}
-        onItemInvoked={this._onItemInvoked}
-        onColumnHeaderContextMenu={this._onColumnHeaderContextMenu}
         ariaLabelForSelectionColumn="Toggle selection"
         ariaLabelForSelectAllCheckbox="Toggle selection for all items"
         checkButtonAriaLabel="Row checkbox"
@@ -681,48 +470,29 @@ export class DetailsListCustomColumnsResults extends React.Component<IDetailsLis
     this.props.parentCallback(order);
   }
 
-  public componentDidMount() {
-    console.groupCollapsed('DetailsListCustomColumnsResults -> componentDidMount');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
   public componentDidUpdate(previousProps: IDetailsListCustomColumnsResultsProp, previousState: IDetailsListCustomColumnsResultsState) {
-    console.groupCollapsed('DetailsListCustomColumnsResults -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
     if (previousState.sortedItems != this.props.items) {
-      this.setState({ sortedItems: this.props.items }, () => {
-      });
+      this.setState({ sortedItems: this.props.items });
     }
     if (previousState.order != this.props.order) {
-      this.setState({ order: this.props.order }, () => {
-      });
+      this.setState({ order: this.props.order });
     }
     if (previousState.showOrganization != this.props.showOrganization) {
       this.setState({
         showOrganization: this.props.showOrganization,
         columns: _buildColumns(this.props.items, this.props.showOrganization, this.props.showDepartment, this.props.showDivision)
-      }, () => {
-
       });
     }
     if (previousState.showDepartment != this.props.showDepartment) {
       this.setState({
         showDepartment: this.props.showDepartment,
         columns: _buildColumns(this.props.items, this.props.showOrganization, this.props.showDepartment, this.props.showDivision)
-      }, () => {
       });
     }
     if (previousState.showDivision != this.props.showDivision) {
       this.setState({
         showDivision: this.props.showDivision,
         columns: _buildColumns(this.props.items, this.props.showOrganization, this.props.showDepartment, this.props.showDivision)
-      }, () => {
       });
     }
   }
@@ -763,8 +533,6 @@ export class DetailsListCustomColumnsResults extends React.Component<IDetailsLis
   }
 
   private _onColumnClick = (event: React.MouseEvent<HTMLElement>, column: IColumn): void => {
-    const { columns } = this.state;
-    let { sortedItems } = this.state;
     let isSortedDescending = column.isSortedDescending;
 
     if (column.isSorted) {
@@ -778,14 +546,9 @@ export class DetailsListCustomColumnsResults extends React.Component<IDetailsLis
     });
   }
 
-  private _onColumnHeaderContextMenu(column: IColumn | undefined, ev: React.MouseEvent<HTMLElement> | undefined): void {
-    console.log(`column ${column!.key} contextmenu opened.`);
-  }
-
-  private _onItemInvoked(item: any, index: number | undefined): void {
-    alert(`Item ${item.name} at index ${index} has been invoked.`);
-  }
 }
+
+
 
 export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanelState> {
   constructor(props) {
@@ -798,24 +561,13 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
       filtersOrganization: [],
       filtersDepartment: [],
       filtersDivision: [],
-      clearFilters: false
+      clearFilters: false,
+      prefilter_key_department: '',
+      prefilter_key_division: ''
     };
   }
 
-  public componentDidMount() {
-    console.groupCollapsed('FilterPanel -> componentDidMount');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
   public componentDidUpdate(previousProps: IFilterPanelProps, previousState: IFilterPanelState) {
-    console.groupCollapsed('FilterPanel -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
     if (previousState.showPanel != this.props.showPanel) {
       this.setState({ showPanel: this.props.showPanel }, () => {
         this.sendData(this.state.showPanel, this.state.filters, this.state.filtersOrganization.length, this.state.filtersDepartment.length, this.state.filtersDivision.length, this.state.clearFilters);
@@ -823,99 +575,30 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
     }
 
     if (previousState.hasChoiceData === false && this.state.hasChoiceData === false) {
-      this.setState({ hasChoiceData: true }, () => {
-        this.getRESTResults();
-      });
+      this.setState({ hasChoiceData: true });
     }
 
     if (previousState.clearFilters != this.props.clearFilters) {
-      this.setState({
-        clearFilters: this.props.clearFilters/* , needUpdate: true */
-      });
+      this.setState({ clearFilters: this.props.clearFilters });
     }
 
-  }
-
-  public availOrganizations = [];
-  public availOrganizationsObject = [];
-  public availDepartments = [];
-  public availDepartmentsObject = [];
-  public availDivisions = [];
-  public availDivisionsObject = [];
-
-  public sortDropdowns(a, b) {
-    return /* (a, b) =>  */(a.text > b.text) ? 1 : -1;
-  }
-
-  public getRESTResults() {
-    const myPromise = new Promise((resolve, reject) => {
-      const searchSourceUrl = "https://auroragov.sharepoint.com/sites/PhoneList";
-      const listName = "EmployeeContactList";
-      const select = "$select=Company,JobTitle,Division,Program,Organization";
-      const top = "$top=5000";
-      const requestUrl = searchSourceUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?" + select + "&" + top;
-      appContext.spHttpClient.get(requestUrl, SPHttpClient.configurations.v1)
-        .then((response: SPHttpClientResponse) => {
-          if (response.ok) {
-            response.json().then((responseJSON) => {
-              if (responseJSON != null) {
-                let items: any[] = responseJSON.value;
-                resolve(items);
-              }
-              reject(new Error('Something went wrong.'));
-            });
-          }
-        });
-    });
-    const onResolved = (items) => {
-      items.map(item => {
-
-        if (item.Organization != null) {
-          if (this.availOrganizations.indexOf(item.Organization) === -1) {
-            this.availOrganizations.push(item.Organization);
-            this.availOrganizationsObject.push({
-              key: item.Organization.split(' ').join(''),
-              text: item.Organization
-            });
-          }
-          this.availOrganizationsObject.sort(this.sortDropdowns);
-        }
-
-        if (item.Company != null) {
-          if (this.availDepartments.indexOf(item.Company) === -1) {
-            this.availDepartments.push(item.Company);
-            this.availDepartmentsObject.push({
-              key: item.Company.split(' ').join(''),
-              text: item.Company
-            });
-          }
-          this.availDepartmentsObject.sort(this.sortDropdowns);
-        }
-
-        if (item.Division != null) {
-          if (this.availDivisions.indexOf(item.Division) === -1) {
-            this.availDivisions.push(item.Division);
-            this.availDivisionsObject.push({
-              key: item.Division.split(' ').join(''),
-              text: item.Division
-            });
-          }
-          this.availDivisionsObject.sort(this.sortDropdowns);
-        }
-
-      });
-    };
-    const onRejected = (error) => console.log(error);
-
-    myPromise.then(onResolved, onRejected);
-
+    if (previousState.prefilter_key_department != this.props.prefilter_key_department) {
+      this.setState({
+        prefilter_key_department: this.props.prefilter_key_department,
+        prefilter_label_department: this.props.prefilter_label_department
+      },
+        this._applyFilters);
+    }
+    if (previousState.prefilter_key_division != this.props.prefilter_key_division) {
+      this.setState({
+        prefilter_key_division: this.props.prefilter_key_division,
+        prefilter_label_division: this.props.prefilter_label_division
+      },
+        this._applyFilters);
+    }
   }
 
   public sendData = (showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
-    console.groupCollapsed('FilterPanel -> sendData');
-    console.log('showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters', showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters);
-    console.log('state', this.state);
-    console.groupEnd();
     this.props.parentCallback(showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters);
   }
 
@@ -929,23 +612,6 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
       () => { this.sendData(this.state.showPanel, this.state.filters, this.state.filtersOrganization.length, this.state.filtersDepartment.length, this.state.filtersDivision.length, this.state.clearFilters); }
     );
   }
- 
-  // private _onDismiss = (ev?: React.SyntheticEvent<HTMLElement>) => {
-  //   if (!ev) {
-  //     console.log('Panel dismissed.');
-  //     return;
-  //   }
-
-  //   console.log('Close button clicked or light dismissed.');
-  //   if (ev.nativeEvent.srcElement && (ev.nativeEvent.srcElement as Element).className.indexOf('ms-Button-icon') !== -1) {
-  //     console.log('Close button clicked.');
-  //   }
-  //   if (ev.nativeEvent.srcElement && (ev.nativeEvent.srcElement as Element).className.indexOf('ms-Overlay') !== -1) {
-  //     console.log('Light dismissed.');
-  //   }
-  //   this._hidePanel();
-  //   // this.sendData(false);
-  // }
 
   private _applyFilters = () => {
 
@@ -953,25 +619,37 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
     let hasFiltersOrganization = false;
     let hasFiltersDepartment = false;
     let hasFiltersDivision = false;
-    console.groupCollapsed('FilterPanel -> _applyFilters');
-    console.log('this.state.filtersOrganization', this.state.filtersOrganization, this.state.filtersOrganization.length);
-    console.log('this.state.filtersDepartment', this.state.filtersDepartment, this.state.filtersDepartment.length);
-    console.log('this.state.filtersDivision', this.state.filtersDivision, this.state.filtersDivision.length);
-    console.groupEnd();
-    if (this.state.filtersOrganization.length) {
-      const restFiltersOrganization = "(Organization eq '" + this.state.filtersOrganization.join("' or Organization eq '") + "')";
-      restFilters.push(restFiltersOrganization);
-      hasFiltersOrganization = true;
+
+    if (this.state.prefilter_label_department) {
+      if (this.state.prefilter_label_department != 'NoFilter') {
+        const restFiltersDepartment = "Company eq '" + this.state.prefilter_label_department.split('&').join('%26') + "'";
+        restFilters.push(restFiltersDepartment);
+        hasFiltersDepartment = true;
+      }
     }
-    if (this.state.filtersDepartment.length) {
+    else if (this.state.filtersDepartment.length) {
       const restFiltersDepartment = "(Company eq '" + this.state.filtersDepartment.join("' or Company eq '") + "')";
       restFilters.push(restFiltersDepartment);
       hasFiltersDepartment = true;
     }
-    if (this.state.filtersDivision.length) {
+
+    if (this.state.prefilter_label_division) {
+      if (this.state.prefilter_label_division != 'NoFilter') {
+        const restFiltersDivision = "Division eq '" + this.state.prefilter_label_division.split('&').join('%26') + "'";
+        restFilters.push(restFiltersDivision);
+        hasFiltersDivision = true;
+      }
+    }
+    else if (this.state.filtersDivision.length) {
       const restFiltersDivision = "(Division eq '" + this.state.filtersDivision.join("' or Division eq '") + "')";
       restFilters.push(restFiltersDivision);
       hasFiltersDivision = true;
+    }
+
+    if (this.state.filtersOrganization.length) {
+      const restFiltersOrganization = "(Organization eq '" + this.state.filtersOrganization.join("' or Organization eq '") + "')";
+      restFilters.push(restFiltersOrganization);
+      hasFiltersOrganization = true;
     }
 
     this.setState(
@@ -983,7 +661,6 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
   }
 
   private _clearFilters = () => {
-    console.log('_clearFilters');
     this.setState(
       {
         showPanel: false,
@@ -992,8 +669,7 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
         filtersDepartment: [],
         filtersDivision: [],
         clearFilters: true
-      },
-      () => {
+      }, () => {
         this.sendData(this.state.showPanel, this.state.filters, false, false, false, true);
       }
     );
@@ -1026,39 +702,30 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
   private _onFilterChangeOrganization = (e) => {
     if (e.target.checked) {
       let newFilters = this.state.filtersOrganization;
-      newFilters.push(e.target.title);
+      newFilters.push(e.target.title.split('&').join('%26'));
       this.setState({
         filtersOrganization: newFilters
-      },
-        () => {
-        }
-      );
+      });
     }
   }
 
   private _onFilterChangeDepartment = (e) => {
     if (e.target.checked) {
       let newFilters = this.state.filtersDepartment;
-      newFilters.push(e.target.title);
+      newFilters.push(e.target.title.split('&').join('%26'));
       this.setState({
         filtersDepartment: newFilters
-      },
-        () => {
-        }
-      );
+      });
     }
   }
 
   private _onFilterChangeDivision = (e) => {
     if (e.target.checked) {
       let newFilters = this.state.filtersDivision;
-      newFilters.push(e.target.title);
+      newFilters.push(e.target.title.split('&').join('%26'));
       this.setState({
         filtersDivision: newFilters
-      },
-        () => {
-        }
-      );
+      });
     }
   }
 
@@ -1069,7 +736,7 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
         isOpen={this.state.showPanel}
         closeButtonAriaLabel='Close'
         isLightDismiss={true}
-        headerText='Light Dismiss Panel'
+        headerText='Filter Contacts'
         onDismiss={this._hidePanel}
         onRenderFooterContent={this._onRenderFooterContent}
         isHiddenOnDismiss={true}
@@ -1078,27 +745,39 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
         customWidth='420px'
       >
         <Dropdown
-          placeholder='Select departments...'
+          placeholder={
+            this.state.prefilter_key_department != null
+              && this.state.prefilter_key_department != undefined
+              && this.state.prefilter_key_department != 'NoFilter'
+              ? 'Filtered by ' + this.state.prefilter_label_department
+              : 'Select departments...'
+          }
           label='Department'
           onChange={this._onFilterChangeDepartment}
           multiSelect
-          options={this.availDepartmentsObject}
+          options={this.props.departmentOptions}
+          disabled={
+            this.state.prefilter_key_department != null
+            && this.state.prefilter_key_department != undefined
+            && this.state.prefilter_key_department != 'NoFilter'
+          }
           styles={{ dropdown: { width: 300 } }}
         />
         <Dropdown
-          placeholder='Select divisions...'
+          placeholder={this.state.prefilter_label_division != null && this.state.prefilter_label_division != undefined ? 'Filtered by ' + this.state.prefilter_label_division : 'Select divisions...'}
           label='Division'
           onChange={this._onFilterChangeDivision}
           multiSelect
-          options={this.availDivisionsObject}
+          options={this.props.divisionOptions}
           styles={{ dropdown: { width: 300 } }}
+          disabled={this.state.prefilter_label_division != null && this.state.prefilter_label_division != undefined}
         />
         <Dropdown
           placeholder='Select organizations...'
           label='Organization'
           onChange={this._onFilterChangeOrganization}
           multiSelect
-          options={this.availOrganizationsObject}
+          options={availOrganizationsObject}
           styles={{ dropdown: { width: 300 } }}
         />
       </Panel>
@@ -1115,7 +794,7 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
     this.state = {
       view: this.props.view,
       order: this.props.order,
-      size: 'large',
+      size: 'small',
       showPanel: this.props.showPanel,
       filters: this.props.filters,
       hasFiltersOrganization: false,
@@ -1130,20 +809,7 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
     this.handleFilterClick = this.handleFilterClick.bind(this);
   }
 
-  public componentDidMount() {
-    console.groupCollapsed('CommandBarSearchControls -> componentDidMount');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
   public componentDidUpdate(previousProps: ICommandBarSearchControlsProps, previousState: ICommandBarSearchControlsState) {
-    console.groupCollapsed('CommandBarSearchControls -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
     if (previousState.filters != this.props.filters) {
       this.setState({ filters: this.props.filters }, () => {
         this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
@@ -1164,14 +830,12 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
   }
 
   public handleFilterClick = () => {
-    console.log('filter clicked');
     this.setState({
       showPanel: !this.state.showPanel
     });
   }
 
   public handleSortTilesClick = (orderClicked) => {
-    console.log('order clicked');
     this.setState({
       order: orderClicked
     }, () => {
@@ -1180,7 +844,6 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
   }
 
   public handleViewTilesClick = () => {
-    console.log('Tiles');
     this.setState({
       view: 'Tiles'
     }, () => {
@@ -1189,7 +852,6 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
   }
 
   public handleViewListClick = () => {
-    console.log('List');
     this.setState({
       view: 'List'
     }, () => {
@@ -1198,7 +860,6 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
   }
 
   public handleTileSizeClick = (sizeClicked) => {
-    console.log('size clicked');
     this.setState({
       size: sizeClicked
     }, () => {
@@ -1216,10 +877,6 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
       clearFilters: clearFilters
     },
       () => {
-        console.groupCollapsed('CommandBarSearchControls -> callbackFromFilterPanelToCommandBar');
-        console.log('showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters', showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters);
-        console.log('this.state', this.state);
-        console.groupEnd();
         this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, clearFilters);
       }
     );
@@ -1285,35 +942,6 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
       }
     ];
   }
-
-  // private getOverlflowItems = () => {
-  //   return [
-  //     {
-  //       key: 'move',
-  //       name: 'Move to...',
-  //       onClick: () => console.log('Move to'),
-  //       iconProps: {
-  //         iconName: 'MoveToFolder'
-  //       }
-  //     },
-  //     {
-  //       key: 'copy',
-  //       name: 'Copy to...',
-  //       onClick: () => console.log('Copy to'),
-  //       iconProps: {
-  //         iconName: 'Copy'
-  //       }
-  //     },
-  //     {
-  //       key: 'rename',
-  //       name: 'Rename...',
-  //       onClick: () => console.log('Rename'),
-  //       iconProps: {
-  //         iconName: 'Edit'
-  //       }
-  //     }
-  //   ];
-  // }
 
   private getFarItems = () => {
     if (this.state.view == 'Tiles') {
@@ -1410,6 +1038,12 @@ export class CommandBarSearchControls extends React.Component<ICommandBarSearchC
         showPanel={this.state.showPanel}
         filters={this.state.filters}
         clearFilters={this.state.clearFilters}
+        prefilter_key_department={this.props.prefilter_key_department}
+        prefilter_key_division={this.props.prefilter_key_division}
+        prefilter_label_department={this.props.prefilter_label_department}
+        prefilter_label_division={this.props.prefilter_label_division}
+        departmentOptions={this.props.departmentOptions}
+        divisionOptions={this.props.divisionOptions}
       />
     </div>);
   }
@@ -1442,20 +1076,7 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
     this.handleClear = this.handleClear.bind(this);
   }
 
-  public componentDidMount() {
-    console.groupCollapsed('ContactSearchBox -> componentDidMount');
-    console.log('props', this.props);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
   public componentDidUpdate(previousProps: IContactSearchBoxProps, previousState: IContactSearchBoxState) {
-    console.groupCollapsed('ContactSearchBox -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
     if (previousState.order != this.props.order) {
       this.setState({ order: this.props.order, needUpdate: true }, () => {
         if (this.state.view == 'List') {
@@ -1491,7 +1112,7 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
     }
     if (previousState.clearFilters != this.props.clearFilters) {
       this.setState({
-        clearFilters: this.props.clearFilters/* , needUpdate: true */
+        clearFilters: this.props.clearFilters
       });
     }
 
@@ -1506,13 +1127,9 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
     if (e.length) {
       this.getRESTResults(e);
     }
-    else {
-      console.log('no data yet');
-    }
   }, 1000);
 
   public getRESTResults(e) {
-    console.groupCollapsed('ContactSearchBox -> getRESTResults');
     let searchTerms = [];
     const myPromise = new Promise((resolve, reject) => {
       if (e.constructor === Array) {
@@ -1528,42 +1145,34 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
         'JobTitle',
         'Program'
       ];
-      console.log('this.props.hasFiltersOrganization', this.state.hasFiltersOrganization);
-      console.log('this.props.hasFiltersDepartment', this.state.hasFiltersDepartment);
-      console.log('this.props.hasFiltersDivision', this.state.hasFiltersDivision);
       if (!this.state.hasFiltersOrganization && this.state.showOrganization) {
-        console.log('no org in refiners, add to searchFields');
         searchFields.push('Organization');
       }
       if (!this.state.hasFiltersDepartment && this.state.showDepartment) {
-        console.log('no dept in refiners, add to searchFields');
         searchFields.push('Company');
       }
       if (!this.state.hasFiltersDivision && this.state.showDivision) {
-        console.log('no div in refiners, add to searchFields');
         searchFields.push('Division');
       }
       for (let term of searchTerms) {
+        let theseTerms = [];
         for (let field of searchFields) {
-          searchFilters.push("substringof('" + term + "'," + field + ")");
+          theseTerms.push("substringof('" + term + "'," + field + ")");
         }
+        searchFilters.push("(" + theseTerms.join(' or ') + ")");
       }
       const searchSourceUrl = "https://auroragov.sharepoint.com/sites/PhoneList";
       const listName = "EmployeeContactList";
       const select = "$select=Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone";
       const top = "$top=100";
 
-      const searchBarFilters = "(" + searchFilters.join(' or ') + ")";
-      console.log('searchBarFilters', searchBarFilters);
+      const searchBarFilters = "(" + searchFilters.join(' and ') + ")";
 
       const refiners = this.state.filters != null && this.state.filters.length ? this.state.filters + " and " : '';
-      console.log('refiners', refiners);
 
       const filter = "$filter=" + refiners + searchBarFilters;
-      console.log('filter', filter);
       const sortOrder = '$orderby=' + this.state.order;
       const requestUrl = searchSourceUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?" + select + "&" + top + "&" + filter + "&" + sortOrder;
-      console.log('requestUrl', requestUrl);
       appContext.spHttpClient.get(requestUrl, SPHttpClient.configurations.v1)
         .then((response: SPHttpClientResponse) => {
           if (response.ok) {
@@ -1595,8 +1204,6 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
     const onRejected = (error) => console.log(error);
 
     myPromise.then(onResolved, onRejected);
-
-    console.groupEnd();
   }
 
   public handleClear(e) {
@@ -1640,6 +1247,12 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
         showPanel={this.state.showPanel}
         filters={this.state.filters}
         clearFilters={this.state.clearFilters}
+        prefilter_key_department={this.props.prefilter_key_department}
+        prefilter_key_division={this.props.prefilter_key_division}
+        prefilter_label_department={this.props.prefilter_label_department}
+        prefilter_label_division={this.props.prefilter_label_division}
+        departmentOptions={this.props.departmentOptions}
+        divisionOptions={this.props.divisionOptions}
       />
       : '';
     return (<div>
@@ -1658,7 +1271,6 @@ export class ContactSearchBox extends React.Component<IContactSearchBoxProps, IC
 export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
 
   constructor(props) {
-
     super(props);
 
     this.state = {
@@ -1667,7 +1279,7 @@ export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
       searchTerms: '',
       view: 'Tiles',
       order: 'FirstName',
-      size: 'large',
+      size: 'small',
       showPanel: false,
       filters: '',
       hasFiltersOrganization: false,
@@ -1679,26 +1291,6 @@ export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
     this.callbackFromSearchBoxToMainApp = this.callbackFromSearchBoxToMainApp.bind(this);
   }
 
-  public componentDidMount() {
-    console.group('MainApp -> componentDidMount');
-    console.log('this.props', this.props);
-    console.log('this.state', this.state);
-    console.groupEnd();
-    console.log('asdfasdfasdfasdf', graph.users.getById('lhibbs@auroragov.org').photo.toUrl());
-    console.log('asdfasdfasdfasdf', graph.users.getById('lhibbs@auroragov.org').photo.toUrlAndQuery());
-  }
-
-  public componentDidUpdate(previousProps: IMainAppProps, previousState: IMainAppState) {
-    console.group('MainApp -> componentDidUpdate');
-    console.log('previousProps', previousProps);
-    console.log('props', this.props);
-    console.log('previousState', previousState);
-    console.log('state', this.state);
-    console.groupEnd();
-  }
-
-  public componentWillUnmount() {
-  }
 
   public callbackFromSearchBoxToMainApp = (boolVal, childData, searchTerms, view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
     this.setState({
@@ -1714,10 +1306,7 @@ export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
       hasFiltersDepartment: hasFiltersDepartment,
       hasFiltersDivision: hasFiltersDivision,
       clearFilters: clearFilters
-    },
-      () => {
-      }
-    );
+    });
   }
 
   public callbackFromDetailsListToMainApp = (order) => {
@@ -1771,6 +1360,12 @@ export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
         showDepartment={this.props.showDepartment}
         showDivision={this.props.showDivision}
         clearFilters={this.state.clearFilters}
+        prefilter_key_department={this.props.prefilter_key_department}
+        prefilter_key_division={this.props.prefilter_key_division}
+        prefilter_label_department={this.props.prefilter_label_department}
+        prefilter_label_division={this.props.prefilter_label_division}
+        departmentOptions={this.props.departmentOptions}
+        divisionOptions={this.props.divisionOptions}
       />
       {resultViewElement}
     </div>);
@@ -1780,9 +1375,133 @@ export class MainApp extends React.Component<IMainAppProps, IMainAppState> {
 
 export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhoneListSearchWebPartProps> {
 
+  public availOrganizations = [];
+
+  private getOptionsPromise: Promise<any>;
+
+  public onInit(): Promise<void> {
+    appContext = this.context;
+    this.getOptionsPromise = this.getOptions();
+    return this.getOptionsPromise;
+  }
+
+  public sortDropdowns(a, b) {
+    return (a.key > b.key) ? 1 : -1;
+  }
+
+  private getOptions(): Promise<void> {
+    return new Promise<void>((resolve2: (options) => void, reject2: (error: any) => void) => {
+      const myPromise = new Promise((resolve, reject) => {
+        const searchSourceUrl = "https://auroragov.sharepoint.com/sites/PhoneList";
+        const listName = "EmployeeContactList";
+        const select = "$select=Company,Division,Organization";
+        const top = "$top=500";
+        const requestUrl = searchSourceUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?" + select + "&" + top;
+        appContext.spHttpClient.get(requestUrl, SPHttpClient.configurations.v1)
+          .then((response: SPHttpClientResponse) => {
+            if (response.ok) {
+              response.json().then((responseJSON) => {
+                if (responseJSON != null) {
+                  let items: any[] = responseJSON.value;
+                  resolve(items);
+                }
+                reject(new Error('Something went wrong.'));
+              });
+            }
+          });
+      });
+      const onResolved = (items) => {
+
+        let departmentsTempArray = [];
+        let divisionsTempArray = [];
+
+        update(this.properties, 'departmentOptions', (): any => {
+          return [];
+        });
+        update(this.properties, 'divisionOptions', (): any => {
+          return [];
+        });
+        update(this.properties, 'organizationOptions', (): any => {
+          return [];
+        });
+
+        items.map(item => {
+          if (item.Company != null) {
+            if (departmentsTempArray.indexOf(item.Company) === -1) {
+              departmentsTempArray.push(item.Company);
+              this.properties.departmentOptions.push({
+                key: item.Company.split(' ').join(''),
+                text: item.Company
+              });
+            }
+          }
+          if (item.Division != null) {
+            if (divisionsTempArray.indexOf(item.Division) === -1) {
+              divisionsTempArray.push(item.Division);
+              this.properties.divisionOptions.push({
+                key: item.Division.split(' ').join(''),
+                text: item.Division
+              });
+            }
+          }
+          if (item.Organization != null) {
+            if (this.availOrganizations.indexOf(item.Organization) === -1) {
+              this.availOrganizations.push(item.Organization);
+              availOrganizationsObject.push({
+                key: item.Organization.split(' ').join(''),
+                text: item.Organization
+              });
+            }
+          }
+        });
+
+        this.properties.departmentOptions.sort(this.sortDropdowns);
+        this.properties.divisionOptions.sort(this.sortDropdowns);
+        availOrganizationsObject.sort(this.sortDropdowns);
+
+        const blankOption = {
+          key: 'NoFilter',
+          text: 'No Filter'
+        };
+        propPaneDepartments = JSON.parse(JSON.stringify(this.properties.departmentOptions));
+        propPaneDepartments.unshift(blankOption);
+        propPaneDivisions = JSON.parse(JSON.stringify(this.properties.divisionOptions));
+        propPaneDivisions.unshift(blankOption);
+
+        this.render();
+      };
+      const onRejected = (error) => { console.log(error); };
+      myPromise.then(onResolved, onRejected);
+      resolve2('good to go');
+      reject2(new Error('Something went wrong.'));
+    });
+  }
+
   public render(): void {
 
-    appContext = this.context;
+    if (this.properties.departmentOptions) {
+      if (this.properties.prefilter_key_department) {
+        if (this.properties.prefilter_key_department != 'NoFilter') {
+          const newDeparmentLabel = this.properties.departmentOptions.find(obj => obj.key == this.properties.prefilter_key_department).text;
+          update(this.properties, 'prefilter_label_department', (): any => { return newDeparmentLabel; });
+        }
+        else {
+          update(this.properties, 'prefilter_label_department', (): any => { return ''; });
+        }
+      }
+    }
+
+    if (this.properties.divisionOptions) {
+      if (this.properties.prefilter_key_division) {
+        if (this.properties.prefilter_key_division != 'NoFilter') {
+          const newDivisionLabel = this.properties.divisionOptions.find(obj => obj.key == this.properties.prefilter_key_division).text;
+          update(this.properties, 'prefilter_label_division', (): any => { return newDivisionLabel; });
+        }
+        else {
+          update(this.properties, 'prefilter_label_division', (): any => { return ''; });
+        }
+      }
+    }
 
     const element = <div>
       <MainApp
@@ -1793,11 +1512,18 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
         showOrganization={this.properties.showOrganization}
         showDepartment={this.properties.showDepartment}
         showDivision={this.properties.showDivision}
+        prefilter_key_department={this.properties.prefilter_key_department}
+        prefilter_label_department={this.properties.prefilter_label_department}
+        prefilter_key_division={this.properties.prefilter_key_division}
+        prefilter_label_division={this.properties.prefilter_label_division}
+        departmentOptions={this.properties.departmentOptions}
+        divisionOptions={this.properties.divisionOptions}
       />
     </div>;
 
     ReactDom.render(element, this.domElement);
   }
+
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
@@ -1808,6 +1534,7 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+
     return {
       pages: [
         {
@@ -1839,7 +1566,7 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
               ]
             },
             {
-              groupName: 'Fields to Show',
+              groupName: 'Fields to Show in Results',
               groupFields: [
                 PropertyPaneCheckbox('showOrganization', {
                   text: 'Organization'
@@ -1851,23 +1578,33 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
                   text: 'Division'
                 })
               ]
+            },
+            {
+              groupName: 'Preconfigured Filters',
+              groupFields: [
+                PropertyPaneDropdown('prefilter_key_department', {
+                  label: 'Departments',
+                  options: propPaneDepartments,
+                  selectedKey: this.properties.prefilter_key_department
+                }),
+                PropertyPaneDropdown('prefilter_key_division', {
+                  label: 'Divisions',
+                  options: propPaneDivisions,
+                  selectedKey: this.properties.prefilter_key_division
+                })
+              ]
             }
           ]
         }
       ]
     };
   }
-
 }
 
 
 
-
 function _buildColumns(items: IResult[], showOrganization, showDepartment, showDivision): IColumn[] {
-  console.log('_buildColumns -> items', items);
-
   let theColumns = [];
-
   items.map(item => {
     theColumns.push({
       FirstName: item.FirstName,
@@ -1882,8 +1619,6 @@ function _buildColumns(items: IResult[], showOrganization, showDepartment, showD
       WorkAddress: item.WorkAddress
     });
   });
-
   const columns = buildColumns(theColumns);
-
   return columns;
 }

@@ -958,8 +958,7 @@ function getManifests() {
         },
         "PhoneListSearchWebPartStrings": {
           "defaultPath": "lib/webparts/phoneListSearch/loc/en-us.js",
-          "type": "localizedPath",
-          "paths": {}
+          "type": "localizedPath"
         },
         "react": {
           "type": "component",
@@ -992,6 +991,11 @@ function getManifests() {
           "type": "component",
           "version": "1.8.2",
           "id": "c07208f0-ea3b-4c1a-9965-ac1b825211a6"
+        },
+        "@microsoft/sp-lodash-subset": {
+          "type": "component",
+          "version": "1.8.2",
+          "id": "73e1dc6c-8441-42cc-ad47-4bd3659f8a3a"
         }
       }
     }
