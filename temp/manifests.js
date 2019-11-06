@@ -958,7 +958,8 @@ function getManifests() {
         },
         "PhoneListSearchWebPartStrings": {
           "defaultPath": "lib/webparts/phoneListSearch/loc/en-us.js",
-          "type": "localizedPath"
+          "type": "localizedPath",
+          "paths": {}
         },
         "react": {
           "type": "component",

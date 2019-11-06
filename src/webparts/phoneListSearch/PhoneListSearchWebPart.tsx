@@ -753,32 +753,42 @@ export class FilterPanel extends React.Component<IFilterPanelProps, IFilterPanel
               : 'Select departments...'
           }
           label='Department'
-          onChange={this._onFilterChangeDepartment}
           multiSelect
           options={this.props.departmentOptions}
+          styles={{ dropdown: { width: 300 } }}
           disabled={
             this.state.prefilter_key_department != null
             && this.state.prefilter_key_department != undefined
             && this.state.prefilter_key_department != 'NoFilter'
           }
-          styles={{ dropdown: { width: 300 } }}
+          onChange={this._onFilterChangeDepartment}
         />
         <Dropdown
-          placeholder={this.state.prefilter_label_division != null && this.state.prefilter_label_division != undefined ? 'Filtered by ' + this.state.prefilter_label_division : 'Select divisions...'}
+          placeholder={
+            this.state.prefilter_key_division != null
+              && this.state.prefilter_key_division != undefined
+              && this.state.prefilter_key_division != 'NoFilter'
+              ? 'Filtered by ' + this.state.prefilter_key_division
+              : 'Select divisions...'
+          }
           label='Division'
-          onChange={this._onFilterChangeDivision}
           multiSelect
           options={this.props.divisionOptions}
           styles={{ dropdown: { width: 300 } }}
-          disabled={this.state.prefilter_label_division != null && this.state.prefilter_label_division != undefined}
+          disabled={
+            this.state.prefilter_key_division != null &&
+            this.state.prefilter_key_division != undefined
+            && this.state.prefilter_key_division != 'NoFilter'
+          }
+          onChange={this._onFilterChangeDivision}
         />
         <Dropdown
           placeholder='Select organizations...'
           label='Organization'
-          onChange={this._onFilterChangeOrganization}
           multiSelect
           options={availOrganizationsObject}
           styles={{ dropdown: { width: 300 } }}
+          onChange={this._onFilterChangeOrganization}
         />
       </Panel>
     );
