@@ -4,8 +4,8 @@ export interface IPhoneListSearchProps {
     searchBoxPlaceholder: string;
     initialResultText: string;
     noResultText: string;
-    showOrganization: boolean;
-    showDepartment: boolean;
-    showDivision: boolean;
+    show_department: boolean;
+    show_division: boolean;
+    show_organization: boolean;
 }
 //# sourceMappingURL=IPhoneListSearchProps.d.ts.map

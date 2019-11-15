@@ -19,9 +19,9 @@
       "searchBoxPlaceholder": "Type search terms here...",
       "initialResultText": "Enter text in the search bar to get started.",
       "noResultText": "No results found. Try modifying your search terms or filters.",
-      "showOrganization": true,
-      "showDepartment": true,
-      "showDivision": true
+      "show_department": true,
+      "show_division": true,
+      "show_organization": true
     }
   }]
 }

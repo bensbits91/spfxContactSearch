@@ -102,6 +102,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .contactItemFieldBody_span {
+     margin-right: 12px;
+  }
   .contactItemFullName {
     font-size: 24px;
   }
@@ -115,15 +118,18 @@
 
 .small {
   height: 165px;
-  padding: 20px;
-  width: 300px;
+  padding: 25px;
+//   padding: 20px;
+  width: 375px;
+//   width: 300px;
 
   .contactItemImg {
     margin-right: 20px;
   }
   .contactItemDetails {
     font-size: 12px;
-    max-width: 200px;
+    max-width: 300px;
+   //  max-width: 200px;
   }
   .contactItemFullName {
     font-size: 18px;
@@ -134,4 +140,5 @@
   .padBottom {
     padding-bottom: 6px;
   }
+
 }

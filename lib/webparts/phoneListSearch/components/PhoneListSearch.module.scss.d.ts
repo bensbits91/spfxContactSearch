@@ -14,6 +14,7 @@ declare const styles: {
     contactItemDetails: string;
     contactItemFieldLabel: string;
     contactItemFieldBody: string;
+    contactItemFieldBody_span: string;
     contactItemFullName: string;
     padTop: string;
     padBottom: string;

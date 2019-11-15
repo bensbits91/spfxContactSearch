@@ -940,9 +940,9 @@ function getManifests() {
           "searchBoxPlaceholder": "Type search terms here...",
           "initialResultText": "Enter text in the search bar to get started.",
           "noResultText": "No results found. Try modifying your search terms or filters.",
-          "showOrganization": true,
-          "showDepartment": true,
-          "showDivision": true
+          "show_department": true,
+          "show_division": true,
+          "show_organization": true
         }
       }
     ],
@@ -958,8 +958,7 @@ function getManifests() {
         },
         "PhoneListSearchWebPartStrings": {
           "defaultPath": "lib/webparts/phoneListSearch/loc/en-us.js",
-          "type": "localizedPath",
-          "paths": {}
+          "type": "localizedPath"
         },
         "react": {
           "type": "component",
@@ -987,11 +986,6 @@ function getManifests() {
           "type": "component",
           "version": "1.8.2",
           "id": "f9e737b7-f0df-4597-ba8c-3060f82380db"
-        },
-        "@microsoft/sp-http": {
-          "type": "component",
-          "version": "1.8.2",
-          "id": "c07208f0-ea3b-4c1a-9965-ac1b825211a6"
         },
         "@microsoft/sp-lodash-subset": {
           "type": "component",
