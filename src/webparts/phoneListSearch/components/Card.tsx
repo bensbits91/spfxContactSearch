@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { PersonaCoin, PersonaSize } from 'office-ui-fabric-react/lib/Persona';
+import { PersonaCoin } from 'office-ui-fabric-react/lib/Persona';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import styles from './PhoneListSearch.module.scss';
 
 
 
 
-export interface ICardProps {
+/* export  */interface ICardProps {
    item?: any;
    searchTerms: string;
    size?: string;
@@ -15,27 +15,9 @@ export interface ICardProps {
    show_organization: boolean;
 }
 
-export interface ICardState {
-   // item?: any;
-   // show_department: boolean;
-   // show_division: boolean;
-   // show_organization: boolean;
+/* export  */interface ICardState {
+
 }
-
-
-
-//  export interface IFacepileBasicExampleState {
-//    numberOfFaces: any;
-//    imagesFadeIn: boolean;
-//    personaSize: PersonaSize;
-//  }
-
-//  export interface IFacepileBasicExampleProps {
-//    personas: any;
-//    personaSize: number;
-//  }
-
-
 
 
 export default class Card extends React.Component<ICardProps, ICardState> {
@@ -43,35 +25,9 @@ export default class Card extends React.Component<ICardProps, ICardState> {
    constructor(props) {
       super(props);
       this.state = {
-         //  item: this.props.item,
-         //  show_department: this.props.show_department,
-         //  show_division: this.props.show_division,
-         //  show_organization: this.props.show_organization
+
       };
    }
-
-   // public componentDidMount() {  
-   //    console.log('%c : Card -> componentDidMount -> this.props', 'color:orange', this.props);
-   // }
-
-   // public componentDidUpdate(previousProps: ICardProps, previousState: ICardState) {
-   //   if (previousState.item != this.props.item) {
-   //     this.setState({ item: this.props.item }, () => {
-   //     });
-   //   }
-   //   if (previousprops.show_organization != this.props.show_organization) {
-   //     this.setState({ show_organization: this.props.show_organization }, () => {
-   //     });
-   //   }
-   //   if (previousprops.show_department != this.props.show_department) {
-   //     this.setState({ show_department: this.props.show_department }, () => {
-   //     });
-   //   }
-   //   if (previousprops.show_division != this.props.show_division) {
-   //     this.setState({ show_division: this.props.show_division }, () => {
-   //     });
-   //   }
-   // }
 
    public render() {
       const searchTerms = this.props.searchTerms;

@@ -27042,194 +27042,20 @@ var Search_Search = /** @class */ (function (_super) {
     Search___extends(Search, _super);
     function Search(props) {
         var _this = _super.call(this, props) || this;
-        // public sendData = (/* boolVal, childData,  */searchTerms/* , view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters */) => {
-        //   this.props.handler(/* boolVal, childData,  */searchTerms/* , view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters */);
-        // }
         _this.handleChange = Object(lodash["debounce"])(function (e) {
             if (e.length) {
-                //  this.getRESTResults(e);
                 _this.props.handler(e);
             }
         }, 1000);
-        _this.state = {
-        //  searchTerms: [],
-        //  items: [],
-        //  view: this.props.view,
-        //  order: this.props.order,
-        //  needUpdate: false,
-        //  showPanel: false,
-        //  filters: this.props.filters,
-        //  hasFiltersOrganization: this.props.hasFiltersOrganization,
-        //  hasFiltersDepartment: this.props.hasFiltersDepartment,
-        //  hasFiltersDivision: this.props.hasFiltersDivision,
-        //  showOrganization: this.props.showOrganization,
-        //  show_department: this.props.show_department,
-        //  showDivision: this.props.showDivision,
-        //  clearFilters: this.props.clearFilters
-        };
+        _this.state = {};
         _this.handleChange = _this.handleChange.bind(_this);
         _this.handleClear = _this.handleClear.bind(_this);
         return _this;
     }
-    Search.prototype.componentDidUpdate = function (previousProps, previousState) {
-        //   if (previousState.order != this.props.order) {
-        //     this.setState({ order: this.props.order, needUpdate: true }, () => {
-        //       if (this.state.view == 'List') {
-        //         this.getRESTResults(this.state.searchTerms);
-        //       }
-        //     });
-        //   }
-        //   if (previousState.size != this.props.size) {
-        //     this.setState({ size: this.props.size, needUpdate: true }, () => {
-        //     });
-        //   }
-        //   if (previousState.showPanel != this.props.showPanel) {
-        //     this.setState({ showPanel: this.props.showPanel, needUpdate: true }, () => {
-        //     });
-        //   }
-        //   if (previousState.filters != this.state.filters) {
-        //     this.getRESTResults(this.state.searchTerms);
-        //   }
-        //   if (previousState.showOrganization != this.props.showOrganization) {
-        //     this.setState({ showOrganization: this.props.showOrganization, needUpdate: true }, () => {
-        //       this.getRESTResults(this.state.searchTerms);
-        //     });
-        //   }
-        //   if (previousState.show_department != this.props.show_department) {
-        //     this.setState({ show_department: this.props.show_department, needUpdate: true }, () => {
-        //       this.getRESTResults(this.state.searchTerms);
-        //     });
-        //   }
-        //   if (previousState.showDivision != this.props.showDivision) {
-        //     this.setState({ showDivision: this.props.showDivision, needUpdate: true }, () => {
-        //       this.getRESTResults(this.state.searchTerms);
-        //     });
-        //   }
-        //   if (previousState.clearFilters != this.props.clearFilters) {
-        //     this.setState({
-        //       clearFilters: this.props.clearFilters
-        //     });
-        //   }
-    };
-    // public getRESTResults(e) {
-    //   let searchTerms = [];
-    //   const myPromise = new Promise((resolve, reject) => {
-    //     if (e.constructor === Array) {
-    //       searchTerms = e;
-    //     }
-    //     else {
-    //       searchTerms = e.split(' ');
-    //     }
-    //     let searchFilters = [];
-    //     const searchFields = [
-    //       'Title',
-    //       'FirstName',
-    //       'JobTitle',
-    //       'Program'
-    //     ];
-    //     if (!this.state.hasFiltersOrganization && this.state.showOrganization) {
-    //       searchFields.push('Organization');
-    //     }
-    //     if (!this.state.hasFiltersDepartment && this.state.show_department) {
-    //       searchFields.push('Company');
-    //     }
-    //     if (!this.state.hasFiltersDivision && this.state.showDivision) {
-    //       searchFields.push('Division');
-    //     }
-    //     for (let term of searchTerms) {
-    //       let theseTerms = [];
-    //       for (let field of searchFields) {
-    //         theseTerms.push("substringof('" + term + "'," + field + ")");
-    //       }
-    //       searchFilters.push("(" + theseTerms.join(' or ') + ")");
-    //     }
-    //     const searchSourceUrl = "https://auroragov.sharepoint.com/sites/PhoneList";
-    //     const listName = "EmployeeContactList";
-    //     const select = "$select=Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone";
-    //     const top = "$top=100";
-    //     const searchBarFilters = "(" + searchFilters.join(' and ') + ")";
-    //     const refiners = this.state.filters != null && this.state.filters.length ? this.state.filters + " and " : '';
-    //     const filter = "$filter=" + refiners + searchBarFilters;
-    //     const sortOrder = '$orderby=' + this.state.order;
-    //     const requestUrl = searchSourceUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?" + select + "&" + top + "&" + filter + "&" + sortOrder;
-    //    //  appContext.spHttpClient.get(requestUrl, SPHttpClient.configurations.v1)
-    //    //    .then((response: SPHttpClientResponse) => {
-    //    //      if (response.ok) {
-    //    //        response.json().then((responseJSON) => {
-    //    //          if (responseJSON != null) {
-    //    //            let items: any[] = responseJSON.value;
-    //    //            resolve(items);
-    //    //          }
-    //    //          reject(new Error('Something went wrong.'));
-    //    //        });
-    //    //      }
-    //    //    });
-    //   });
-    //   const onResolved = (items) => {
-    //     this.setState({
-    //       items: items,
-    //       searchTerms: searchTerms,
-    //       view: this.props.view,
-    //       order: this.props.order,
-    //       size: this.props.size,
-    //       hasFiltersOrganization: this.props.hasFiltersOrganization,
-    //       hasFiltersDepartment: this.props.hasFiltersDepartment,
-    //       hasFiltersDivision: this.props.hasFiltersDivision
-    //     }, () => {
-    //       this.sendData(true, this.state.items, this.state.searchTerms, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-    //     });
-    //   };
-    //   const onRejected = (error) => console.log(error);
-    //   myPromise.then(onResolved, onRejected);
-    // }
     Search.prototype.handleClear = function (e) {
         this.props.handler(null);
-        //   this.setState({
-        //     items: [],
-        //     searchTerms: '',
-        //     order: ''
-        //   },
-        //     () => {
-        //       this.sendData(true, this.state.items, this.state.searchTerms, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-        //     }
-        //   );
     };
-    // public callbackFromCommandBarToSearchBox = (boolVal, view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
-    //   this.setState({
-    //     view: view,
-    //     order: order,
-    //     needUpdate: boolVal,
-    //     size: size,
-    //     showPanel: showPanel,
-    //     filters: filters,
-    //     hasFiltersOrganization: hasFiltersOrganization,
-    //     hasFiltersDepartment: hasFiltersDepartment,
-    //     hasFiltersDivision: hasFiltersDivision,
-    //     clearFilters: clearFilters
-    //   },
-    //     () => {
-    //       this.sendData(true, this.state.items, this.state.searchTerms, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, clearFilters);
-    //       this.handleChange(this.state.searchTerms);
-    //     }
-    //   );
-    // }
     Search.prototype.render = function () {
-        //   const controls = /* this.state.items.length
-        //     ? <CommandBarSearchControls
-        //       handler={this.callbackFromCommandBarToSearchBox}
-        //       view={this.state.view}
-        //       order={this.state.order}
-        //       showPanel={this.state.showPanel}
-        //       filters={this.state.filters}
-        //       clearFilters={this.state.clearFilters}
-        //       prefilter_key_department={this.props.prefilter_key_department}
-        //       prefilter_key_division={this.props.prefilter_key_division}
-        //       prefilter_label_department={this.props.prefilter_label_department}
-        //       prefilter_label_division={this.props.prefilter_label_division}
-        //       departmentOptions={this.props.departmentOptions}
-        //       divisionOptions={this.props.divisionOptions}
-        //     />
-        //     :  */'';
         return (external__react_["createElement"]("div", null,
             external__react_["createElement"](SearchBox, { underlined: true, placeholder: this.props.searchBoxPlaceholder, onChange: this.handleChange, onClear: this.handleClear })));
     };
@@ -28261,66 +28087,21 @@ var Commands_Commands = /** @class */ (function (_super) {
     Commands___extends(Commands, _super);
     function Commands(props) {
         var _this = _super.call(this, props) || this;
-        // public sendData = (boolVal, view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
-        //   this.props.handler(boolVal, view, order, size, showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters);
-        // }
         _this.handleFilterClick = function () {
-            console.log('TCL: handleFilterClick -> handleFilterClick');
             _this.props.handler('filter', true);
-            //   this.setState({
-            //     showPanel: !this.state.showPanel
-            //   });
         };
         _this.handleSortTilesClick = function (orderClicked) {
-            console.log('TCL: handleSortTilesClick -> orderClicked', orderClicked);
             _this.props.handler('sort', orderClicked);
-            //   this.setState({
-            //     order: orderClicked
-            //   }, () => {
-            //     this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-            //   });
         };
         _this.handleViewTilesClick = function () {
-            console.log('TCL: handleViewTilesClick -> handleViewTilesClick');
             _this.props.handler('view', 'Tiles');
-            // this.setState({
-            //    view: 'Tiles'
-            // }, () => {
-            //    this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-            // });
         };
         _this.handleViewListClick = function () {
-            console.log('TCL: handleViewListClick -> handleViewListClick');
             _this.props.handler('view', 'List');
-            // this.setState({
-            //    view: 'List'
-            // }, () => {
-            //    this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-            // });
         };
         _this.handleTileSizeClick = function (sizeClicked) {
-            console.log('TCL: handleTileSizeClick -> sizeClicked', sizeClicked);
             _this.props.handler('size', sizeClicked);
-            // this.setState({
-            //    size: sizeClicked
-            // }, () => {
-            //    this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-            // });
         };
-        // public callbackFromFilterPanelToCommandBar = (showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
-        //    this.setState({
-        //       showPanel: showPanel,
-        //       filters: filters,
-        //       hasFiltersOrganization: hasFiltersOrganization,
-        //       hasFiltersDepartment: hasFiltersDepartment,
-        //       hasFiltersDivision: hasFiltersDivision,
-        //       clearFilters: clearFilters
-        //    },
-        //       () => {
-        //          this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, clearFilters);
-        //       }
-        //    );
-        // }
         _this.getItems = function () {
             if (_this.props.view == 'Tiles') {
                 return [
@@ -28462,38 +28243,13 @@ var Commands_Commands = /** @class */ (function (_super) {
                 }
             ];
         };
-        _this.state = {
-        //  view: this.props.view,
-        //  order: this.props.order,
-        //  size: 'small',
-        //  showPanel: this.props.showPanel,
-        //  filters: this.props.filters,
-        //  hasFiltersOrganization: false,
-        //  hasFiltersDepartment: false,
-        //  hasFiltersDivision: false,
-        //  clearFilters: this.props.clearFilters
-        };
+        _this.state = {};
         _this.handleViewTilesClick = _this.handleViewTilesClick.bind(_this);
         _this.handleViewListClick = _this.handleViewListClick.bind(_this);
         _this.handleSortTilesClick = _this.handleSortTilesClick.bind(_this);
         _this.handleFilterClick = _this.handleFilterClick.bind(_this);
         return _this;
     }
-    Commands.prototype.componentDidUpdate = function (previousProps, previousState) {
-        //   if (previousState.filters != this.props.filters) {
-        //     this.setState({ filters: this.props.filters }, () => {
-        //       this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, false);
-        //     });
-        //   }
-        //   if (previousState.clearFilters != this.props.clearFilters) {
-        //     this.setState({
-        //       clearFilters: this.props.clearFilters,
-        //       showPanel: false
-        //     }, () => {
-        //       this.sendData(true, this.state.view, this.state.order, this.state.size, this.state.showPanel, this.state.filters, this.state.hasFiltersOrganization, this.state.hasFiltersDepartment, this.state.hasFiltersDivision, this.state.clearFilters);
-        //     });
-        //   }
-    };
     Commands.prototype.render = function () {
         return (external__react_["createElement"]("div", null,
             external__react_["createElement"](CommandBar, { items: this.getItems(), farItems: this.getFarItems(), ariaLabel: 'Use left and right arrow keys to navigate between commands' })));
@@ -30821,220 +30577,56 @@ var FilterPanel_FilterPanel = /** @class */ (function (_super) {
     FilterPanel___extends(FilterPanel, _super);
     function FilterPanel(props) {
         var _this = _super.call(this, props) || this;
-        // public sendData = (showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters) => {
-        //    this.props.handler(showPanel, filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, clearFilters);
-        // }
-        // private _showPanel = (): void => {
-        //    this.setState({ showPanel: true });
-        // }
         _this._applyFilters = function () {
             _this.props.handler('apply');
-            // let restFilters = [];
-            // let hasFiltersOrganization = false;
-            // let hasFiltersDepartment = false;
-            // let hasFiltersDivision = false;
-            // if (this.state.prefilter_label_department) {
-            //    if (this.state.prefilter_label_department != 'NoFilter') {
-            //       const restFiltersDepartment = "Company eq '" + this.state.prefilter_label_department.split('&').join('%26') + "'";
-            //       restFilters.push(restFiltersDepartment);
-            //       hasFiltersDepartment = true;
-            //    }
-            // }
-            // else if (this.state.filtersDepartment.length) {
-            //    const restFiltersDepartment = "(Company eq '" + this.state.filtersDepartment.join("' or Company eq '") + "')";
-            //    restFilters.push(restFiltersDepartment);
-            //    hasFiltersDepartment = true;
-            // }
-            // if (this.state.prefilter_label_division) {
-            //    if (this.state.prefilter_label_division != 'NoFilter') {
-            //       const restFiltersDivision = "Division eq '" + this.state.prefilter_label_division.split('&').join('%26') + "'";
-            //       restFilters.push(restFiltersDivision);
-            //       hasFiltersDivision = true;
-            //    }
-            // }
-            // else if (this.state.filtersDivision.length) {
-            //    const restFiltersDivision = "(Division eq '" + this.state.filtersDivision.join("' or Division eq '") + "')";
-            //    restFilters.push(restFiltersDivision);
-            //    hasFiltersDivision = true;
-            // }
-            // if (this.state.filtersOrganization.length) {
-            //    const restFiltersOrganization = "(Organization eq '" + this.state.filtersOrganization.join("' or Organization eq '") + "')";
-            //    restFilters.push(restFiltersOrganization);
-            //    hasFiltersOrganization = true;
-            // }
-            // this.setState(
-            //    { filters: restFilters.join(' and ') },
-            //    () => {
-            //       this.props.handler(this.state.showPanel, this.state.filters, hasFiltersOrganization, hasFiltersDepartment, hasFiltersDivision, this.state.clearFilters);
-            //    }
-            // );
         };
         _this._hidePanel = function () {
             _this.props.handler('hide');
-            // this.setState({
-            //    showPanel: false
-            // }, () => {
-            // this.props.handler(this.state.showPanel, this.state.filters, this.state.filtersOrganization.length, this.state.filtersDepartment.length, this.state.filtersDivision.length, this.state.clearFilters);
-            // });
         };
         _this._clearFilters = function () {
             _this.props.handler('clear');
-            // this.setState(
-            //    {
-            //       showPanel: false,
-            //       filters: '',
-            //       filtersOrganization: [],
-            //       filtersDepartment: [],
-            //       filtersDivision: [],
-            //       clearFilters: true
-            //    }, () => {
-            //       this.props.handler(this.state.showPanel, this.state.filters, false, false, false, true);
-            //    }
-            // );
         };
         _this._onFilterChangeDepartment = function (e) {
             _this.props.handler('department', e.target.title.split('&').join('%26'), e.target.checked);
-            // this.setState({
-            //    filtersDivision: []
-            // });
-            // if (e.target.checked) {
-            //    let newFilters = this.state.filtersDepartment;
-            //    newFilters.push(e.target.title.split('&').join('%26'));
-            //    this.setState({
-            //       filtersDepartment: newFilters
-            //    });
-            // }
         };
         _this._onFilterChangeDivision = function (e) {
             _this.props.handler('division', e.target.title.split('&').join('%26'), e.target.checked);
-            // if (e.target.checked) {
-            //    let newFilters = this.state.filtersDivision;
-            //    newFilters.push(e.target.title.split('&').join('%26'));
-            //    this.setState({
-            //       filtersDivision: newFilters
-            //    });
-            // }
         };
         _this._onFilterChangeOrganization = function (e) {
             _this.props.handler('organization', e.target.title.split('&').join('%26'), e.target.checked);
-            // if (e.target.checked) {
-            //    let newFilters = this.state.filtersOrganization;
-            //    newFilters.push(e.target.title.split('&').join('%26'));
-            //    this.setState({
-            //       filtersOrganization: newFilters
-            //    });
-            // }
         };
         _this._onRenderFooterContent = function () {
             var applyFilterIcon = { iconName: 'WaitlistConfirmMirrored' };
             var hideFilterIcon = { iconName: 'Hide' };
             var clearFilterIcon = { iconName: 'ClearFilter' };
             return (external__react_["createElement"]("div", null,
-                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: applyFilterIcon, 
-                    // onClick={this.props.handler('apply')}
-                    onClick: _this._applyFilters, text: 'Apply' }),
-                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: hideFilterIcon, styles: { root: { marginLeft: 15 } }, 
-                    // onClick={this.props.handler('hide')}
-                    onClick: _this._hidePanel, text: 'Hide' }),
-                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: clearFilterIcon, styles: { root: { marginLeft: 15 } }, 
-                    // onClick={this.props.handler('clear')}
-                    onClick: _this._clearFilters, text: 'Clear' })));
+                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: applyFilterIcon, onClick: _this._applyFilters, text: 'Apply' }),
+                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: hideFilterIcon, styles: { root: { marginLeft: 15 } }, onClick: _this._hidePanel, text: 'Hide' }),
+                external__react_["createElement"](DefaultButton_DefaultButton, { iconProps: clearFilterIcon, styles: { root: { marginLeft: 15 } }, onClick: _this._clearFilters, text: 'Clear' })));
         };
-        _this.state = {
-        // showPanel: this.props.showPanel,
-        // hasChoiceData: false,
-        // filters: '',
-        // filtersOrganization: [],
-        // filtersDepartment: [],
-        // filtersDivision: [],
-        // clearFilters: false,
-        // prefilter_key_department: '',
-        // prefilter_key_division: ''
-        };
+        _this.state = {};
         return _this;
     }
-    /*
- 
-    instead of setting state in this component,
-    handler stuff back to App
-    App function to get division/orgs based on selection
-    App get new data
-    AND re-render filter pane
- 
- 
-    */
-    FilterPanel.prototype.componentDidUpdate = function (previousProps, previousState) {
-        console.log('%c FilterPanel -> componentDidUpdate -> previousProps', 'color:magenta', previousProps);
-        console.log('%c FilterPanel -> componentDidUpdate -> this.props', 'color:magenta', this.props);
-        // if (previousState.showPanel != this.props.showPanel) {
-        //    this.setState({ showPanel: this.props.showPanel }, () => {
-        //       this.props.handler(this.state.showPanel, this.state.filters, this.state.filtersOrganization.length, this.state.filtersDepartment.length, this.state.filtersDivision.length, this.state.clearFilters);
-        //    });
-        // }
-        // if (previousState.hasChoiceData === false && this.state.hasChoiceData === false) {
-        //    this.setState({ hasChoiceData: true });
-        // }
-        // if (previousState.clearFilters != this.props.clearFilters) {
-        //    this.setState({ clearFilters: this.props.clearFilters });
-        // }
-        // if (previousState.prefilter_key_department != this.props.prefilter_key_department) {
-        //    this.setState({
-        //       prefilter_key_department: this.props.prefilter_key_department,
-        //       prefilter_label_department: this.props.prefilter_label_department
-        //    },
-        //       this._applyFilters);
-        // }
-        // if (previousState.prefilter_key_division != this.props.prefilter_key_division) {
-        //    this.setState({
-        //       prefilter_key_division: this.props.prefilter_key_division,
-        //       prefilter_label_division: this.props.prefilter_label_division
-        //    },
-        //       this._applyFilters);
-        // }
-    };
     FilterPanel.prototype.render = function () {
         var selectedKeys_department = [];
         if (this.props.filter_department) {
             this.props.filter_department.map(function (f) {
                 selectedKeys_department.push(f.replace(/ /g, ''));
             });
-            // selectedKeys_department = JSON.parse(JSON.stringify(this.props.filter_department));
-            // selectedKeys_department.map(f => {
-            //    /* return */ f.replace(/ /g, '');
-            // });
         }
         var selectedKeys_division = [];
         if (this.props.filter_division) {
             this.props.filter_division.map(function (f) {
                 selectedKeys_division.push(f.replace(/ /g, ''));
             });
-            // selectedKeys_division = JSON.parse(JSON.stringify(this.props.filter_division));
-            // selectedKeys_division.map(f => {
-            //    /* return */ f.replace(/ /g, '');
-            // });
         }
         var selectedKeys_organization = [];
         if (this.props.filter_organization) {
             this.props.filter_organization.map(function (f) {
                 selectedKeys_organization.push(f.replace(/ /g, ''));
             });
-            // selectedKeys_organization = JSON.parse(JSON.stringify(this.props.filter_organization));
-            // selectedKeys_organization.map(f => {
-            //    /* return */ f.replace(/ /g, '');
-            // });
         }
-        console.log('%c : render -> selectedKeys_department', 'background-color:darkred', selectedKeys_department);
-        console.log('%c : render -> selectedKeys_division', 'background-color:darkred', selectedKeys_division);
-        console.log('%c : render -> selectedKeys_organization', 'background-color:darkred', selectedKeys_organization);
-        return (external__react_["createElement"](Panel
-        // key={this.state.clearFilters ? 'ReRender' : 'noReRender'}
-        , { 
-            // key={this.state.clearFilters ? 'ReRender' : 'noReRender'}
-            isOpen: this.props.showPanel, 
-            // isOpen={this.state.showPanel}
-            closeButtonAriaLabel: 'Close', isLightDismiss: true, headerText: 'Filter Contacts', 
-            // onDismiss={this.props.handler('hide')}
-            onDismiss: this._hidePanel, onRenderFooterContent: this._onRenderFooterContent, isHiddenOnDismiss: true, isFooterAtBottom: true, type: PanelType.custom, customWidth: '420px' },
+        return (external__react_["createElement"](Panel, { isOpen: this.props.showPanel, closeButtonAriaLabel: 'Close', isLightDismiss: true, headerText: 'Filter Contacts', onDismiss: this._hidePanel, onRenderFooterContent: this._onRenderFooterContent, isHiddenOnDismiss: true, isFooterAtBottom: true, type: PanelType.custom, customWidth: '420px' },
             external__react_["createElement"](Dropdown, { placeholder: this.props.prefilter_key_department
                     && this.props.prefilter_key_department != 'NoFilter'
                     ? 'Filtered by ' + this.props.prefilter_label_department
@@ -32416,48 +32008,13 @@ var Card___extends = (this && this.__extends) || (function () {
 
 
 
-//  export interface IFacepileBasicExampleState {
-//    numberOfFaces: any;
-//    imagesFadeIn: boolean;
-//    personaSize: PersonaSize;
-//  }
-//  export interface IFacepileBasicExampleProps {
-//    personas: any;
-//    personaSize: number;
-//  }
 var Card_Card = /** @class */ (function (_super) {
     Card___extends(Card, _super);
     function Card(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = {
-        //  item: this.props.item,
-        //  show_department: this.props.show_department,
-        //  show_division: this.props.show_division,
-        //  show_organization: this.props.show_organization
-        };
+        _this.state = {};
         return _this;
     }
-    // public componentDidMount() {  
-    //    console.log('%c : Card -> componentDidMount -> this.props', 'color:orange', this.props);
-    // }
-    // public componentDidUpdate(previousProps: ICardProps, previousState: ICardState) {
-    //   if (previousState.item != this.props.item) {
-    //     this.setState({ item: this.props.item }, () => {
-    //     });
-    //   }
-    //   if (previousprops.show_organization != this.props.show_organization) {
-    //     this.setState({ show_organization: this.props.show_organization }, () => {
-    //     });
-    //   }
-    //   if (previousprops.show_department != this.props.show_department) {
-    //     this.setState({ show_department: this.props.show_department }, () => {
-    //     });
-    //   }
-    //   if (previousprops.show_division != this.props.show_division) {
-    //     this.setState({ show_division: this.props.show_division }, () => {
-    //     });
-    //   }
-    // }
     Card.prototype.render = function () {
         var searchTerms = this.props.searchTerms;
         var highlightHits = function (str) {
@@ -32543,28 +32100,9 @@ var Grid_Grid = /** @class */ (function (_super) {
     Grid___extends(Grid, _super);
     function Grid(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = {
-        //  items: this.props.items,
-        //  show_organization: this.props.show_organization,
-        //  show_department: this.props.show_department,
-        //  show_division: this.props.show_division,
-        //  size: this.props.size
-        };
+        _this.state = {};
         return _this;
     }
-    Grid.prototype.componentDidMount = function () {
-        console.log('%c : Grid -> componentDidMount -> this.props', 'color:yellow', this.props);
-    };
-    // public componentDidUpdate(previousProps: IGridProps, previousState: IGridState) {
-    // console.log('%c Grid -> componentDidUpdate -> previousProps', 'color:magenta', previousProps);
-    // console.log('%c Grid -> componentDidUpdate -> this.props', 'color:magenta', this.props);
-    //   if (previousState.items != this.props.items) {
-    //     this.setState({ items: this.props.items });
-    //   }
-    // }
-    // private _getKey(item: any, index?: number): string {
-    //    return item.key;
-    // }
     Grid.prototype.render = function () {
         var _this = this;
         return (external__react_["createElement"]("div", null, this.props.items.map(function (item) {
@@ -39680,26 +39218,15 @@ var List___assign = (this && this.__assign) || Object.assign || function(t) {
 
 
 
+// might be able to make this component stateless by moving _buildColumns to App.tsx  <------------------------------------------------
 var components_List_List = /** @class */ (function (_super) {
     List___extends(List, _super);
     function List(props) {
         var _this = _super.call(this, props) || this;
         _this._onColumnClick = function (event, column) {
-            console.log('%c : List -> event', 'color:indigo', event);
             _this.props.handler(column.fieldName);
-            // let isSortedDescending = column.isSortedDescending;
-            // if (column.isSorted) {
-            //    isSortedDescending = !isSortedDescending;
-            // }
-            // this.setState({
-            //    order: column.fieldName
-            // }, () => {
-            // this.props.handler(this.state.order);
-            //  this.sendData(this.state.order);
-            //    });
         };
         _this.state = {
-            // sortedItems: this.props.items,
             columns: _buildColumns(_this.props.items, _this.props.show_organization, _this.props.show_department, _this.props.show_division),
         };
         _this._renderItemColumn = _this._renderItemColumn.bind(_this);
@@ -39707,48 +39234,15 @@ var components_List_List = /** @class */ (function (_super) {
     }
     List.prototype.render = function () {
         var columns = this.state.columns;
-        console.log('%c : List -> render -> this.state', 'color:yellow', this.state);
         var _a = this.props, items = _a.items, searchTerms = _a.searchTerms;
-        console.log('%c : List -> render -> this.props', 'color:yellow', this.props);
         columns.map(function (column) {
             column.isResizable = true;
             column.name = column.fieldName == 'Company' ? 'Department'
                 : column.fieldName == 'Title' ? 'Last Name'
                     : column.fieldName.replace(/([A-Z])/g, ' $1').trim();
         });
-        return (external__react_["createElement"](ShimmeredDetailsList, { items: items, 
-            // items={sortedItems}
-            setKey: "set", columns: columns, onRenderItemColumn: this._renderItemColumn, onColumnHeaderClick: this._onColumnClick, ariaLabelForSelectionColumn: "Toggle selection", ariaLabelForSelectAllCheckbox: "Toggle selection for all items", checkButtonAriaLabel: "Row checkbox", searchTerms: searchTerms }));
+        return (external__react_["createElement"](ShimmeredDetailsList, { items: items, setKey: "set", columns: columns, onRenderItemColumn: this._renderItemColumn, onColumnHeaderClick: this._onColumnClick, ariaLabelForSelectionColumn: "Toggle selection", ariaLabelForSelectAllCheckbox: "Toggle selection for all items", checkButtonAriaLabel: "Row checkbox", searchTerms: searchTerms }));
     };
-    // public sendData = (order) => {
-    //   this.props.handler(order);
-    // }
-    // public componentDidUpdate(previousProps: IListProp, previousState: IListState) {
-    //    if (previousState.sortedItems != this.props.items) {
-    //       this.setState({ sortedItems: this.props.items });
-    //    }
-    //    if (previousState.order != this.props.order) {
-    //       this.setState({ order: this.props.order });
-    //    }
-    //    if (previousState.show_organization != this.props.show_organization) {
-    //       this.setState({
-    //          show_organization: this.props.show_organization,
-    //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-    //       });
-    //    }
-    //    if (previousState.show_department != this.props.show_department) {
-    //       this.setState({
-    //          show_department: this.props.show_department,
-    //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-    //       });
-    //    }
-    //    if (previousState.show_division != this.props.show_division) {
-    //       this.setState({
-    //          show_division: this.props.show_division,
-    //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-    //       });
-    //    }
-    // }
     List.prototype._renderItemColumn = function (item, index, column /* , searchTerms: any */) {
         var searchTermsToHighlight = this.props.searchTerms;
         var highlightHits = function (str) {
@@ -39814,7 +39308,7 @@ var App_App = /** @class */ (function (_super) {
     App___extends(App, _super);
     function App(props) {
         var _this = _super.call(this, props) || this;
-        _this.handler_searchBox = function (e /* boolVal, childData,  searchTerms , view, order, size, showPanel, filters, hasFilters_organization, hasFilters_department, hasFilters_division, clearFilters */) {
+        _this.handler_searchBox = function (e) {
             var terms = e ? e.constructor === Array ? e : e.split(' ') : null;
             if (terms) {
                 var searchFields_1 = [
@@ -39823,38 +39317,32 @@ var App_App = /** @class */ (function (_super) {
                     'JobTitle',
                     'Program'
                 ];
-                if (!_this.state.hasFilters_department && _this.props.show_department) {
+                if (!_this.state.filter_department && _this.props.show_department) {
+                    // if (!this.state.hasFilters_department && this.props.show_department) {
                     searchFields_1.push('Company');
                 }
-                if (!_this.state.hasFilters_division && _this.props.show_division) {
+                if (!_this.state.filter_division && _this.props.show_division) {
+                    // if (!this.state.hasFilters_division && this.props.show_division) {
                     searchFields_1.push('Division');
                 }
-                if (!_this.state.hasFilters_organization && _this.props.show_organization) {
+                if (!_this.state.filter_organization && _this.props.show_organization) {
+                    // if (!this.state.hasFilters_organization && this.props.show_organization) {
                     searchFields_1.push('Organization');
                 }
                 var filter_search_temp_1 = [];
-                // if (value) {
-                // const terms = value;
-                // for (let term of terms) {
-                // async function buildFilter_search() {}
+                console.log('%c : !this.state.filter_department', 'color:lime, background-color:black', !_this.state.filter_department);
+                console.log('%c : !this.state.filter_division', 'color:lime, background-color:black', !_this.state.filter_division);
+                console.log('%c : !this.state.filter_organization', 'color:lime, background-color:black', !_this.state.filter_organization);
                 var filter_search_1;
-                // let thePromise = 
                 terms.map(function (term) {
                     var theseTerms = [];
                     for (var _i = 0, searchFields_2 = searchFields_1; _i < searchFields_2.length; _i++) {
                         var field = searchFields_2[_i];
-                        theseTerms.push("substringof('" + term /* .replace(/'/g,'') */ + "'," + field + ")"); //      THIS DOESN'T WORK -- HOW CAN I FIND O'KEEFE ????????????????????????????????????????????????????????????
+                        theseTerms.push("substringof('" + term + "'," + field + ")"); //      THIS DOESN'T WORK -- HOW CAN I FIND O'KEEFE ????????????????????????????????????????????????????????????
                     }
-                    filter_search_temp_1.push(/* "(" +  */ theseTerms.join(' or ') /*  + ")" */);
-                    /* const  */ filter_search_1 = "(" + filter_search_temp_1.join(' and ') + ")";
+                    filter_search_temp_1.push(theseTerms.join(' or '));
+                    filter_search_1 = "(" + filter_search_temp_1.join(' and ') + ")";
                     console.log('TCL: filter_search', filter_search_1);
-                    // }).then(filter_search => {
-                    //    this.setState({
-                    //       filter_search: filter_search,
-                    //       searchTerms: terms
-                    //    }, () => {
-                    //       this.getResults(/* 'terms', terms */);
-                    //    });
                 });
                 _this.setState({
                     filter_search: filter_search_1,
@@ -39862,7 +39350,7 @@ var App_App = /** @class */ (function (_super) {
                 }, function () {
                     console.log('TCL: buildFilter_search -> this.state.filter_search', _this.state.filter_search);
                     console.log('TCL: buildFilter_search -> this.state.searchTerms', _this.state.searchTerms);
-                    _this.getResults( /* 'terms', terms */);
+                    _this.getResults();
                 });
             }
             else {
@@ -39870,20 +39358,6 @@ var App_App = /** @class */ (function (_super) {
                     searchTerms: null
                 });
             }
-            // this.setState({
-            // needUpdate: boolVal,
-            // items: childData,
-            // searchTerms: searchTerms,
-            // view: view,
-            // order: order,
-            // size: size,
-            // showPanel: showPanel,
-            // filters: filters,
-            // hasFilters_organization: hasFilters_organization,
-            // hasFilters_department: hasFilters_department,
-            // hasFilters_division: hasFilters_division,
-            // clearFilters: clearFilters
-            // });
         };
         _this.handler_commands = function (event, value) {
             console.log('%c App -> handler_commands -> event', 'color:orange', event);
@@ -39901,7 +39375,6 @@ var App_App = /** @class */ (function (_super) {
             else if (event == 'filter') {
                 _this.setState({
                     showPanel: value
-                    // showPanel: true
                 });
             }
             else if (event == 'sort') {
@@ -39933,10 +39406,10 @@ var App_App = /** @class */ (function (_super) {
                 var o_props = JSON.parse(JSON.stringify(_this.props.options_organization)); // original organization options
                 var o_state = JSON.parse(JSON.stringify(_this.state.options_organization)); // currently available organization options
                 if (value2) { // if the clicked department is now selected
-                    f.push(value1); // add it to the filter WITH spaces ??????????????????????????
+                    f.push(value1); // add it to the filter WITH spaces
                 }
                 else { // if the clicked department is now NOT selected
-                    f = f.filter(function (option) { return option != value1; }); // only leave options that don't match the clicked department WITHOUT spaces ?????????????????????????
+                    f = f.filter(function (option) { return option != value1; }); // only leave options that don't match the clicked department WITHOUT spaces
                 }
                 console.log('%c handler_filterPanel -> f', 'background-color:indigo', f);
                 if (f.length) { // if there are any department filters
@@ -40014,43 +39487,26 @@ var App_App = /** @class */ (function (_super) {
             }
             else if (event == 'apply') {
                 var restFilters = [];
-                var hasFilters_organization = false;
-                var hasFilters_department = false;
-                var hasFilters_division = false;
-                /* if (this.props.prefilter_label_department) {
-                   if (this.props.prefilter_label_department != 'NoFilter') {
-                      const restFiltersDepartment = "Company eq '" + this.props.prefilter_label_department.split('&').join('%26') + "'";
-                      restFilters.push(restFiltersDepartment);
-                      hasFilters_department = true;
-                   }
-                }
-                else  */ if (_this.state.filter_department /* .length */) {
+                // let hasFilters_organization = false;
+                // let hasFilters_department = false;
+                // let hasFilters_division = false;
+                if (_this.state.filter_department) {
                     var restFilter_department = "(Company eq '" + _this.state.filter_department.join("' or Company eq '") + "')";
                     restFilters.push(restFilter_department);
-                    hasFilters_department = true;
+                    // hasFilters_department = true;
                 }
-                /* if (this.props.prefilter_label_division) {
-                   if (this.props.prefilter_label_division != 'NoFilter') {
-                      const restFiltersDivision = "Division eq '" + this.props.prefilter_label_division.split('&').join('%26') + "'";
-                      restFilters.push(restFiltersDivision);
-                      hasFilters_division = true;
-                   }
-                }
-                else  */ if (_this.state.filter_division /* .length */) {
+                if (_this.state.filter_division) {
                     var restFilter_division = "(Division eq '" + _this.state.filter_division.join("' or Division eq '") + "')";
                     restFilters.push(restFilter_division);
-                    hasFilters_division = true;
+                    // hasFilters_division = true;
                 }
-                if (_this.state.filter_organization /* .length */) {
+                if (_this.state.filter_organization) {
                     var restFilter_organization = "(Organization eq '" + _this.state.filter_organization.join("' or Organization eq '") + "')";
                     restFilters.push(restFilter_organization);
-                    hasFilters_organization = true;
+                    // hasFilters_organization = true;
                 }
                 _this.setState({
                     filter_panel: restFilters.join(' and '),
-                    hasFilters_department: hasFilters_department,
-                    hasFilters_division: hasFilters_division,
-                    hasFilters_organization: hasFilters_organization
                 }, function () {
                     _this.getResults();
                 });
@@ -40075,26 +39531,12 @@ var App_App = /** @class */ (function (_super) {
             }, function () {
                 _this.getResults();
             });
-            // this.setState({
-            //    order: order
-            // },
-            //    () => {
-            //    }
-            // );
         };
         _this.state = {
-            needUpdate: false,
-            // items: [],
-            // searchTerms: '',
             view: 'Tiles',
             order: 'FirstName',
             size: 'small',
             showPanel: false,
-            // filters: '',
-            hasFilters_organization: false,
-            hasFilters_department: false,
-            hasFilters_division: false,
-            clearFilters: false,
             options_division: _this.props.options_division,
             options_organization: _this.props.options_organization,
         };
@@ -40114,50 +39556,7 @@ var App_App = /** @class */ (function (_super) {
         console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_department', 'color:orange', this.props.prefilter_key_department);
         console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_division', 'color:orange', this.props.prefilter_key_division);
     };
-    App.prototype.getResults = function ( /* what, value */) {
-        /*       const searchFields = [
-                 'Title',
-                 'FirstName',
-                 'JobTitle',
-                 'Program'
-              ];
-              if (!this.state.hasFilters_department && this.props.show_department) {
-                 searchFields.push('Company');
-              }
-              if (!this.state.hasFilters_division && this.props.show_division) {
-                 searchFields.push('Division');
-              }
-              if (!this.state.hasFilters_organization && this.props.show_organization) {
-                 searchFields.push('Organization');
-              }
-        
-              if (what = 'terms') {
-                 let filter_search = [];
-                 if (value) {
-                    const terms = value;
-                    // for (let term of terms) {
-                    terms.map(term => {
-                       let theseTerms = [];
-                       for (let field of searchFields) {
-                          theseTerms.push("substringof('" + term + "'," + field + ")");
-                       }
-                       filter_search.push("(" + theseTerms.join(' or ') + ")");
-                    }).then(filter_search => {
-                       this.setState({
-                          filter_search: filter_search
-                       });
-                    });
-                    // }
-                 }
-                 else {
-        
-        
-        
-        
-                 }
-              }
-         */
-        // const searchBarFilters = "(" + this.state.filter_search.join(' and ') + ")";
+    App.prototype.getResults = function () {
         var _this = this;
         if (this.state.filter_search.length) {
             var select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone';
@@ -40194,47 +39593,20 @@ var App_App = /** @class */ (function (_super) {
             var theWeb = new sp_es5["b" /* Web */](this.props.context.pageContext.web.absoluteUrl);
             var theList = theWeb.lists.getByTitle('EmployeeContactList');
             var theItems = theList.items.select(select).orderBy(orderBy, orderByAsc).filter(filter).top(500);
-            theItems.get /* All */().then(function (items) {
+            theItems.get().then(function (items) {
                 _this.setState({
-                    items: items //,
-                    //searchTerms: value
+                    items: items
                 });
             });
         }
-        // else {
-        //    console.log('NEED TO HANDLE EMPTY SEARCH <----------------------------------------------------------------');
-        // }
     };
-    // public sortCards(value) {
-    //    console.log('%c : sortCards -> value', 'color:chocolate', value);
-    // }
     App.prototype.render = function () {
         var el_search = external__react_["createElement"](components_Search, { handler: this.handler_searchBox, searchBoxPlaceholder: this.props.searchBoxPlaceholder });
         var el_commands = this.state.searchTerms ?
             external__react_["createElement"](components_Commands, { handler: this.handler_commands, view: this.state.view, order: this.state.order, showPanel: this.state.showPanel })
             : '';
-        /* this.state.items.length
-        ? <Commands
-          handler={this.callbackFromCommandBarToSearchBox}
-          view={this.state.view}
-          order={this.state.order}
-          showPanel={this.state.showPanel}
-          filters={this.state.filters}
-          clearFilters={this.state.clearFilters}
-          prefilter_key_department={this.props.prefilter_key_department}
-          prefilter_key_division={this.props.prefilter_key_division}
-          prefilter_label_department={this.props.prefilter_label_department}
-          prefilter_label_division={this.props.prefilter_label_division}
-          options_department={this.props.options_department}
-          options_division={this.props.options_division}
-        />
-        :  '';*/
-        var el_filterPanel = external__react_["createElement"](components_FilterPanel, { handler: this.handler_filterPanel, showPanel: this.state.showPanel, 
-            // filters={this.state.filters}
-            // clearFilters={this.state.clearFilters}
-            prefilter_key_department: this.props.prefilter_key_department, prefilter_key_division: this.props.prefilter_key_division, prefilter_label_department: this.props.prefilter_label_department, prefilter_label_division: this.props.prefilter_label_division, filter_department: this.state.filter_department, filter_division: this.state.filter_division, filter_organization: this.state.filter_organization, options_department: this.props.options_department, options_division: this.state.options_division, options_organization: this.state.options_organization });
-        var el_results = this.state.searchTerms /* .length */ ?
-            //    this.state.items.length ?
+        var el_filterPanel = external__react_["createElement"](components_FilterPanel, { handler: this.handler_filterPanel, showPanel: this.state.showPanel, prefilter_key_department: this.props.prefilter_key_department, prefilter_key_division: this.props.prefilter_key_division, prefilter_label_department: this.props.prefilter_label_department, prefilter_label_division: this.props.prefilter_label_division, filter_department: this.state.filter_department, filter_division: this.state.filter_division, filter_organization: this.state.filter_organization, options_department: this.props.options_department, options_division: this.state.options_division, options_organization: this.state.options_organization });
+        var el_results = this.state.searchTerms ?
             this.state.items ?
                 this.state.view == 'Tiles'
                     ? external__react_["createElement"](components_Grid, { items: this.state.items, searchTerms: this.state.searchTerms, size: this.state.size, show_organization: this.props.show_organization, show_department: this.props.show_department, show_division: this.props.show_division })

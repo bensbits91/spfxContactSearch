@@ -4,10 +4,7 @@ import { buildColumns, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 
 
-
-
-
-export interface IResult {
+/* export  */interface IResult {
    key: string;
    FirstName: string;
    Title: string;
@@ -22,28 +19,20 @@ export interface IResult {
    CellPhone: string;
 }
 
-
-export interface IListProp {
+/* export  */interface IListProp {
    handler: any;
    items?: IResult[];
    searchTerms?: any;
-   // order?: string;
    show_department: boolean;
    show_division: boolean;
    show_organization: boolean;
 }
 
-export interface IListState {
-   // sortedItems: any;
+/* export  */interface IListState {
    columns: IColumn[];
-   // searchTerms?: any;
-   // order?: string;
-   // show_department: boolean;
-   // show_division: boolean;
-   // show_organization: boolean;
 }
 
-
+// might be able to make this component stateless by moving _buildColumns to App.tsx  <------------------------------------------------
 
 
 
@@ -54,13 +43,7 @@ export default class List extends React.Component<IListProp, IListState> {
       super(props);
 
       this.state = {
-         // sortedItems: this.props.items,
          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division),
-         // searchTerms: this.props.searchTerms,
-         // order: this.props.order,
-         // show_organization: this.props.show_organization,
-         // show_department: this.props.show_department,
-         // show_division: this.props.show_division
       };
 
       this._renderItemColumn = this._renderItemColumn.bind(this);
@@ -68,20 +51,17 @@ export default class List extends React.Component<IListProp, IListState> {
 
    public render() {
       const { columns } = this.state;
-      console.log('%c : List -> render -> this.state', 'color:yellow', this.state);
       const { items, searchTerms } = this.props;
-      console.log('%c : List -> render -> this.props', 'color:yellow', this.props);
       columns.map(column => {
          column.isResizable = true;
          column.name = column.fieldName == 'Company' ? 'Department'
-         : column.fieldName == 'Title' ? 'Last Name'
-         : column.fieldName.replace(/([A-Z])/g, ' $1').trim();
+            : column.fieldName == 'Title' ? 'Last Name'
+               : column.fieldName.replace(/([A-Z])/g, ' $1').trim();
       });
-      
+
       return (
          <ShimmeredDetailsList
             items={items}
-            // items={sortedItems}
             setKey="set"
             columns={columns}
             onRenderItemColumn={this._renderItemColumn}
@@ -93,38 +73,6 @@ export default class List extends React.Component<IListProp, IListState> {
          />
       );
    }
-
-   // public sendData = (order) => {
-   //   this.props.handler(order);
-   // }
-
-   // public componentDidUpdate(previousProps: IListProp, previousState: IListState) {
-   //    if (previousState.sortedItems != this.props.items) {
-   //       this.setState({ sortedItems: this.props.items });
-   //    }
-   //    if (previousState.order != this.props.order) {
-   //       this.setState({ order: this.props.order });
-   //    }
-   //    if (previousState.show_organization != this.props.show_organization) {
-   //       this.setState({
-   //          show_organization: this.props.show_organization,
-   //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-   //       });
-   //    }
-   //    if (previousState.show_department != this.props.show_department) {
-   //       this.setState({
-   //          show_department: this.props.show_department,
-   //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-   //       });
-   //    }
-   //    if (previousState.show_division != this.props.show_division) {
-   //       this.setState({
-   //          show_division: this.props.show_division,
-   //          columns: _buildColumns(this.props.items, this.props.show_organization, this.props.show_department, this.props.show_division)
-   //       });
-   //    }
-   // }
-
 
    public _renderItemColumn(item: IResult, index: number, column: IColumn/* , searchTerms: any */) {
       const searchTermsToHighlight = this.props.searchTerms;
@@ -161,21 +109,7 @@ export default class List extends React.Component<IListProp, IListState> {
    }
 
    private _onColumnClick = (event: React.MouseEvent<HTMLElement>, column: IColumn): void => {
-      console.log('%c : List -> event', 'color:indigo', event);
       this.props.handler(column.fieldName);
-
-      // let isSortedDescending = column.isSortedDescending;
-
-      // if (column.isSorted) {
-      //    isSortedDescending = !isSortedDescending;
-      // }
-
-      // this.setState({
-      //    order: column.fieldName
-      // }, () => {
-      // this.props.handler(this.state.order);
-      //  this.sendData(this.state.order);
-      //    });
    }
 
 }

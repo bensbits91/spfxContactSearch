@@ -23,17 +23,12 @@ export interface IAppProps {
    prefilter_label_department: string;
    prefilter_label_division: string;
 
-   // filter_department: any;
-   // filter_division: any;
-   // filter_organization: any;
-
    options_department: any;
    options_division: any;
    options_organization: any;
 }
 
 export interface IAppState {
-   needUpdate: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
    items?: any;
    searchTerms?: string;
    view?: string;
@@ -41,13 +36,6 @@ export interface IAppState {
    size?: string;
    showPanel: boolean;
 
-   hasFilters_department: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   hasFilters_organization: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   hasFilters_division: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-
-   clearFilters: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-
-   // options_department: any;
    options_division: any;
    options_organization: any;
 
@@ -57,6 +45,12 @@ export interface IAppState {
 
    filter_search?: any;
    filter_panel?: string;
+
+   // needUpdate: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
+   // hasFilters_department: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
+   // hasFilters_organization: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
+   // hasFilters_division: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
+   // clearFilters: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
 }
 
 
@@ -66,23 +60,12 @@ export default class App extends React.Component<IAppProps, IAppState> {
       super(props);
 
       this.state = {
-         needUpdate: false,
-         // items: [],
-         // searchTerms: '',
          view: 'Tiles',
          order: 'FirstName',
          size: 'small',
          showPanel: false,
-         // filters: '',
-         hasFilters_organization: false,
-         hasFilters_department: false,
-         hasFilters_division: false,
-         clearFilters: false,
-
          options_division: this.props.options_division,
          options_organization: this.props.options_organization,
-
-         // filter_panel
       };
 
       this.handler_searchBox = this.handler_searchBox.bind(this);
@@ -102,7 +85,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
       console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_division', 'color:orange', this.props.prefilter_key_division);
    }
 
-   public handler_searchBox = (e/* boolVal, childData,  searchTerms , view, order, size, showPanel, filters, hasFilters_organization, hasFilters_department, hasFilters_division, clearFilters */) => {
+   public handler_searchBox = (e) => {
       const terms = e ? e.constructor === Array ? e : e.split(' ') : null;
 
       if (terms) {
@@ -112,46 +95,33 @@ export default class App extends React.Component<IAppProps, IAppState> {
             'JobTitle',
             'Program'
          ];
-         if (!this.state.hasFilters_department && this.props.show_department) {
+         if (!this.state.filter_department && this.props.show_department) {
+            // if (!this.state.hasFilters_department && this.props.show_department) {
             searchFields.push('Company');
          }
-         if (!this.state.hasFilters_division && this.props.show_division) {
+         if (!this.state.filter_division && this.props.show_division) {
+            // if (!this.state.hasFilters_division && this.props.show_division) {
             searchFields.push('Division');
          }
-         if (!this.state.hasFilters_organization && this.props.show_organization) {
+         if (!this.state.filter_organization && this.props.show_organization) {
+            // if (!this.state.hasFilters_organization && this.props.show_organization) {
             searchFields.push('Organization');
          }
          let filter_search_temp = [];
-         // if (value) {
-         // const terms = value;
-         // for (let term of terms) {
-
-         // async function buildFilter_search() {}
+         console.log('%c : !this.state.filter_department', 'color:lime, background-color:black', !this.state.filter_department);
+         console.log('%c : !this.state.filter_division', 'color:lime, background-color:black', !this.state.filter_division);
+         console.log('%c : !this.state.filter_organization', 'color:lime, background-color:black', !this.state.filter_organization);
 
          let filter_search: string;
 
-                                                /* 
-                                                   COMMIT TO GIT HUB                                                                                     <===========================================
-                                                   CLEAN UP CODE                                                                                         <===========================================
-                                                   FIX APOSTROPHE ISSUE                                                                                  <===========================================
-                                                */
-
-         // let thePromise = 
          terms.map(term => {
             let theseTerms = [];
             for (let field of searchFields) {
-               theseTerms.push("substringof('" + term/* .replace(/'/g,'') */ + "'," + field + ")"); //      THIS DOESN'T WORK -- HOW CAN I FIND O'KEEFE ????????????????????????????????????????????????????????????
+               theseTerms.push("substringof('" + term + "'," + field + ")"); //      THIS DOESN'T WORK -- HOW CAN I FIND O'KEEFE ????????????????????????????????????????????????????????????
             }
-            filter_search_temp.push(/* "(" +  */theseTerms.join(' or ')/*  + ")" */);
-            /* const  */filter_search = "(" + filter_search_temp.join(' and ') + ")";
+            filter_search_temp.push(theseTerms.join(' or '));
+            filter_search = "(" + filter_search_temp.join(' and ') + ")";
             console.log('TCL: filter_search', filter_search);
-            // }).then(filter_search => {
-            //    this.setState({
-            //       filter_search: filter_search,
-            //       searchTerms: terms
-            //    }, () => {
-            //       this.getResults(/* 'terms', terms */);
-            //    });
          });
 
          this.setState({
@@ -160,7 +130,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
          }, () => {
             console.log('TCL: buildFilter_search -> this.state.filter_search', this.state.filter_search);
             console.log('TCL: buildFilter_search -> this.state.searchTerms', this.state.searchTerms);
-            this.getResults(/* 'terms', terms */);
+            this.getResults();
          });
 
 
@@ -171,21 +141,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          });
       }
 
-
-      // this.setState({
-      // needUpdate: boolVal,
-      // items: childData,
-      // searchTerms: searchTerms,
-      // view: view,
-      // order: order,
-      // size: size,
-      // showPanel: showPanel,
-      // filters: filters,
-      // hasFilters_organization: hasFilters_organization,
-      // hasFilters_department: hasFilters_department,
-      // hasFilters_division: hasFilters_division,
-      // clearFilters: clearFilters
-      // });
    }
 
    public handler_commands = (event, value) => {
@@ -205,7 +160,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
       else if (event == 'filter') {
          this.setState({
             showPanel: value
-            // showPanel: true
          });
       }
       else if (event == 'sort') {
@@ -244,10 +198,10 @@ export default class App extends React.Component<IAppProps, IAppState> {
          let o_state = JSON.parse(JSON.stringify(this.state.options_organization)); // currently available organization options
 
          if (value2) { // if the clicked department is now selected
-            f.push(value1); // add it to the filter WITH spaces ??????????????????????????
+            f.push(value1); // add it to the filter WITH spaces
          }
          else { // if the clicked department is now NOT selected
-            f = f.filter(option => option != value1); // only leave options that don't match the clicked department WITHOUT spaces ?????????????????????????
+            f = f.filter(option => option != value1); // only leave options that don't match the clicked department WITHOUT spaces
          }
          console.log('%c handler_filterPanel -> f', 'background-color:indigo', f);
 
@@ -341,47 +295,33 @@ export default class App extends React.Component<IAppProps, IAppState> {
       else if (event == 'apply') {
 
          let restFilters = [];
-         let hasFilters_organization = false;
-         let hasFilters_department = false;
-         let hasFilters_division = false;
+         // let hasFilters_organization = false;
+         // let hasFilters_department = false;
+         // let hasFilters_division = false;
 
-         /* if (this.props.prefilter_label_department) {
-            if (this.props.prefilter_label_department != 'NoFilter') {
-               const restFiltersDepartment = "Company eq '" + this.props.prefilter_label_department.split('&').join('%26') + "'";
-               restFilters.push(restFiltersDepartment);
-               hasFilters_department = true;
-            }
-         }
-         else  */if (this.state.filter_department/* .length */) {
+         if (this.state.filter_department) {
             const restFilter_department = "(Company eq '" + this.state.filter_department.join("' or Company eq '") + "')";
             restFilters.push(restFilter_department);
-            hasFilters_department = true;
+            // hasFilters_department = true;
          }
 
-         /* if (this.props.prefilter_label_division) {
-            if (this.props.prefilter_label_division != 'NoFilter') {
-               const restFiltersDivision = "Division eq '" + this.props.prefilter_label_division.split('&').join('%26') + "'";
-               restFilters.push(restFiltersDivision);
-               hasFilters_division = true;
-            }
-         }
-         else  */if (this.state.filter_division/* .length */) {
+         if (this.state.filter_division) {
             const restFilter_division = "(Division eq '" + this.state.filter_division.join("' or Division eq '") + "')";
             restFilters.push(restFilter_division);
-            hasFilters_division = true;
+            // hasFilters_division = true;
          }
 
-         if (this.state.filter_organization/* .length */) {
+         if (this.state.filter_organization) {
             const restFilter_organization = "(Organization eq '" + this.state.filter_organization.join("' or Organization eq '") + "')";
             restFilters.push(restFilter_organization);
-            hasFilters_organization = true;
+            // hasFilters_organization = true;
          }
 
          this.setState({
             filter_panel: restFilters.join(' and '),
-            hasFilters_department: hasFilters_department,
-            hasFilters_division: hasFilters_division,
-            hasFilters_organization: hasFilters_organization
+            // hasFilters_department: hasFilters_department,
+            // hasFilters_division: hasFilters_division,
+            // hasFilters_organization: hasFilters_organization
          }, () => {
             this.getResults();
          });
@@ -409,62 +349,10 @@ export default class App extends React.Component<IAppProps, IAppState> {
       }, () => {
          this.getResults();
       });
-
-      // this.setState({
-      //    order: order
-      // },
-      //    () => {
-      //    }
-      // );
    }
 
 
-   public getResults(/* what, value */) {
-
-      /*       const searchFields = [
-               'Title',
-               'FirstName',
-               'JobTitle',
-               'Program'
-            ];
-            if (!this.state.hasFilters_department && this.props.show_department) {
-               searchFields.push('Company');
-            }
-            if (!this.state.hasFilters_division && this.props.show_division) {
-               searchFields.push('Division');
-            }
-            if (!this.state.hasFilters_organization && this.props.show_organization) {
-               searchFields.push('Organization');
-            }
-      
-            if (what = 'terms') {
-               let filter_search = [];
-               if (value) {
-                  const terms = value;
-                  // for (let term of terms) {
-                  terms.map(term => {
-                     let theseTerms = [];
-                     for (let field of searchFields) {
-                        theseTerms.push("substringof('" + term + "'," + field + ")");
-                     }
-                     filter_search.push("(" + theseTerms.join(' or ') + ")");
-                  }).then(filter_search => {
-                     this.setState({
-                        filter_search: filter_search
-                     });
-                  });
-                  // }
-               }
-               else {
-      
-      
-      
-      
-               }
-            }
-       */
-      // const searchBarFilters = "(" + this.state.filter_search.join(' and ') + ")";
-
+   public getResults() {
 
       if (this.state.filter_search.length) {
          const select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone';
@@ -503,33 +391,18 @@ export default class App extends React.Component<IAppProps, IAppState> {
          const filter = filter_array.length > 1 ? filter_array.join(' and ') : this.state.filter_search;
          console.log('%c : getResults -> filter', 'color:aqua', filter);
 
-
-
-
          const theWeb = new Web(this.props.context.pageContext.web.absoluteUrl);
          const theList = theWeb.lists.getByTitle('EmployeeContactList');
          const theItems = theList.items.select(select).orderBy(orderBy, orderByAsc).filter(filter).top(500);
 
-         theItems.get/* All */().then(items => {
+         theItems.get().then(items => {
             this.setState({
-               items: items//,
-               //searchTerms: value
+               items: items
             });
          });
       }
-      // else {
-      //    console.log('NEED TO HANDLE EMPTY SEARCH <----------------------------------------------------------------');
-      // }
-
-
-
 
    }
-
-   // public sortCards(value) {
-   //    console.log('%c : sortCards -> value', 'color:chocolate', value);
-
-   // }
 
    public render() {
 
@@ -537,24 +410,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          <Search
             handler={this.handler_searchBox}
             searchBoxPlaceholder={this.props.searchBoxPlaceholder}
-         // view={this.state.view}
-         // order={this.state.order}
-         // size={this.state.size}
-         // showPanel={this.state.showPanel}
-         // filters={this.state.filters}
-         // hasFilters_organization={this.state.hasFilters_organization}
-         // hasFilters_department={this.state.hasFilters_department}
-         // hasFilters_division={this.state.hasFilters_division}
-         // show_organization={this.props.show_organization}
-         // show_department={this.props.show_department}
-         // show_division={this.props.show_division}
-         // clearFilters={this.state.clearFilters}
-         // prefilter_key_department={this.props.prefilter_key_department}
-         // prefilter_key_division={this.props.prefilter_key_division}
-         // prefilter_label_department={this.props.prefilter_label_department}
-         // prefilter_label_division={this.props.prefilter_label_division}
-         // options_departments={this.props.options_departments}
-         // options_divisions={this.props.options_divisions}
          />;
 
 
@@ -564,39 +419,13 @@ export default class App extends React.Component<IAppProps, IAppState> {
             view={this.state.view}
             order={this.state.order}
             showPanel={this.state.showPanel}
-         // filters={this.state.filters}
-         // clearFilters={this.state.clearFilters}
-         // prefilter_key_department={this.props.prefilter_key_department}
-         // prefilter_key_division={this.props.prefilter_key_division}
-         // prefilter_label_department={this.props.prefilter_label_department}
-         // prefilter_label_division={this.props.prefilter_label_division}
-         // options_department={this.props.options_department}
-         // options_division={this.props.options_division}
          />
          : '';
-      /* this.state.items.length
-      ? <Commands
-        handler={this.callbackFromCommandBarToSearchBox}
-        view={this.state.view}
-        order={this.state.order}
-        showPanel={this.state.showPanel}
-        filters={this.state.filters}
-        clearFilters={this.state.clearFilters}
-        prefilter_key_department={this.props.prefilter_key_department}
-        prefilter_key_division={this.props.prefilter_key_division}
-        prefilter_label_department={this.props.prefilter_label_department}
-        prefilter_label_division={this.props.prefilter_label_division}
-        options_department={this.props.options_department}
-        options_division={this.props.options_division}
-      />
-      :  '';*/
 
       const el_filterPanel =
          <FilterPanel
             handler={this.handler_filterPanel}
             showPanel={this.state.showPanel}
-            // filters={this.state.filters}
-            // clearFilters={this.state.clearFilters}
 
             prefilter_key_department={this.props.prefilter_key_department}
             prefilter_key_division={this.props.prefilter_key_division}
@@ -613,8 +442,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
          />;
 
       const el_results =
-         this.state.searchTerms/* .length */ ?
-            //    this.state.items.length ?
+         this.state.searchTerms ?
             this.state.items ?
                this.state.view == 'Tiles'
                   ? <Grid
