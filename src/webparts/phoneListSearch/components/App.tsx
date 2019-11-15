@@ -115,9 +115,11 @@ export default class App extends React.Component<IAppProps, IAppState> {
          let filter_search: string;
 
          terms.map(term => {
+            const term_uri = encodeURIComponent(term).replace(/'/g, '%27%27');
+            console.log('%c : term_uri', 'color:darkorange; background-color:white', term_uri);
             let theseTerms = [];
             for (let field of searchFields) {
-               theseTerms.push("substringof('" + term + "'," + field + ")"); //      THIS DOESN'T WORK -- HOW CAN I FIND O'KEEFE ????????????????????????????????????????????????????????????
+               theseTerms.push("substringof('" + term_uri + "'," + field + ")");
             }
             filter_search_temp.push(theseTerms.join(' or '));
             filter_search = "(" + filter_search_temp.join(' and ') + ")";
@@ -382,8 +384,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
          console.log('%c : getResults -> filter_panel_array', 'color:lime', filter_panel_array);
          const filter_panel_string = filter_panel_array.length > 1 ? filter_panel_array.join(' and ') : filter_panel_array[0] || null;
          console.log('%c : getResults -> filter_panel_string', 'color:lime', filter_panel_string);
-
-
+         
          let filter_array = [this.state.filter_search];
          if (filter_panel_string) { filter_array.push(filter_panel_string); }
          if (filter_pre_string) { filter_array.push(filter_pre_string); }
