@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 
 
-/* export  */interface ICommandsProps {
+interface ICommandsProps {
    handler;
    view?: string;
    order?: string;
@@ -10,7 +10,7 @@ import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
    showPanel: boolean;
 }
 
-/* export  */interface ICommandsState {
+interface ICommandsState {
 
 }
 

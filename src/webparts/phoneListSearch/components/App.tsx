@@ -45,12 +45,6 @@ export interface IAppState {
 
    filter_search?: any;
    filter_panel?: string;
-
-   // needUpdate: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   // hasFilters_department: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   // hasFilters_organization: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   // hasFilters_division: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
-   // clearFilters: boolean; // DON'T NEED THIS          RIGHT ????????????????????????????????????????????????????????????????????????????????????????????????????
 }
 
 
@@ -74,16 +68,16 @@ export default class App extends React.Component<IAppProps, IAppState> {
       this.handler_list = this.handler_list.bind(this);
    }
 
-   public componentDidUpdate(previousProps: IAppProps, previousState: IAppState) {
-      console.log('%c App -> componentDidUpdate -> previousProps', 'color:cyan', previousProps);
-      console.log('%c App -> componentDidUpdate -> this.props', 'color:cyan', this.props);
-      console.log('%c App -> componentDidUpdate -> previousState', 'color:cyan', previousState);
-      console.log('%c App -> componentDidUpdate -> this.state', 'color:cyan', this.state);
-      console.log('%c App -> componentDidUpdate -> this.state.filter_search', 'color:orange', this.state.filter_search);
-      console.log('%c App -> componentDidUpdate -> this.state.filter_panel', 'color:orange', this.state.filter_panel);
-      console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_department', 'color:orange', this.props.prefilter_key_department);
-      console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_division', 'color:orange', this.props.prefilter_key_division);
-   }
+   // public componentDidUpdate(previousProps: IAppProps, previousState: IAppState) {
+   //    console.log('%c App -> componentDidUpdate -> previousProps', 'color:cyan', previousProps);
+   //    console.log('%c App -> componentDidUpdate -> this.props', 'color:cyan', this.props);
+   //    console.log('%c App -> componentDidUpdate -> previousState', 'color:cyan', previousState);
+   //    console.log('%c App -> componentDidUpdate -> this.state', 'color:cyan', this.state);
+   //    console.log('%c App -> componentDidUpdate -> this.state.filter_search', 'color:orange', this.state.filter_search);
+   //    console.log('%c App -> componentDidUpdate -> this.state.filter_panel', 'color:orange', this.state.filter_panel);
+   //    console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_department', 'color:orange', this.props.prefilter_key_department);
+   //    console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_division', 'color:orange', this.props.prefilter_key_division);
+   // }
 
    public handler_searchBox = (e) => {
       const terms = e ? e.constructor === Array ? e : e.split(' ') : null;
@@ -96,42 +90,31 @@ export default class App extends React.Component<IAppProps, IAppState> {
             'Program'
          ];
          if (!this.state.filter_department && this.props.show_department) {
-            // if (!this.state.hasFilters_department && this.props.show_department) {
             searchFields.push('Company');
          }
          if (!this.state.filter_division && this.props.show_division) {
-            // if (!this.state.hasFilters_division && this.props.show_division) {
             searchFields.push('Division');
          }
          if (!this.state.filter_organization && this.props.show_organization) {
-            // if (!this.state.hasFilters_organization && this.props.show_organization) {
             searchFields.push('Organization');
          }
          let filter_search_temp = [];
-         console.log('%c : !this.state.filter_department', 'color:lime, background-color:black', !this.state.filter_department);
-         console.log('%c : !this.state.filter_division', 'color:lime, background-color:black', !this.state.filter_division);
-         console.log('%c : !this.state.filter_organization', 'color:lime, background-color:black', !this.state.filter_organization);
-
          let filter_search: string;
 
          terms.map(term => {
             const term_uri = encodeURIComponent(term).replace(/'/g, '%27%27');
-            console.log('%c : term_uri', 'color:darkorange; background-color:white', term_uri);
             let theseTerms = [];
             for (let field of searchFields) {
                theseTerms.push("substringof('" + term_uri + "'," + field + ")");
             }
             filter_search_temp.push(theseTerms.join(' or '));
             filter_search = "(" + filter_search_temp.join(' and ') + ")";
-            console.log('TCL: filter_search', filter_search);
          });
 
          this.setState({
             filter_search: filter_search,
             searchTerms: terms
          }, () => {
-            console.log('TCL: buildFilter_search -> this.state.filter_search', this.state.filter_search);
-            console.log('TCL: buildFilter_search -> this.state.searchTerms', this.state.searchTerms);
             this.getResults();
          });
 
@@ -146,8 +129,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
    }
 
    public handler_commands = (event, value) => {
-      console.log('%c App -> handler_commands -> event', 'color:orange', event);
-      console.log('%c App -> handler_commands -> value', 'color:orange', value);
 
       if (event == 'size') {
          this.setState({
@@ -165,7 +146,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          });
       }
       else if (event == 'sort') {
-         console.log('%c : handler_commands -> sort', 'color:chocolate');
          this.setState({
             order: value
          }, () => {
@@ -175,23 +155,15 @@ export default class App extends React.Component<IAppProps, IAppState> {
    }
 
    public handler_filterPanel = (event, value1, value2) => {
-      console.log('%c App -> handler_filterPanel -> event', 'color:yellow', event);
-      console.log('%c App -> handler_filterPanel -> value1', 'color:yellow', value1);
-      console.log('%c App -> handler_filterPanel -> value2', 'color:yellow', value2);
 
       if (event == 'hide') {
-         console.log('%c App -> handler_filterPanel -> hide', 'color: yellow');
          this.setState({
             showPanel: false
          });
       }
 
       else if (event == 'department') {
-         console.log('%c handler_filterPanel -> this.props', 'background-color:black', this.props);
-         console.log('%c handler_filterPanel -> this.state', 'background-color:black', this.state);
-
          let f = this.state.filter_department ? JSON.parse(JSON.stringify(this.state.filter_department)) : []; // currently selected options with spaces
-         console.log('%c handler_filterPanel -> f', 'background-color:darkolivegreen', f);
 
          const d_props = JSON.parse(JSON.stringify(this.props.options_division)); // original division options
          let d_state = JSON.parse(JSON.stringify(this.state.options_division)); // currently available division options
@@ -205,7 +177,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          else { // if the clicked department is now NOT selected
             f = f.filter(option => option != value1); // only leave options that don't match the clicked department WITHOUT spaces
          }
-         console.log('%c handler_filterPanel -> f', 'background-color:indigo', f);
 
          if (f.length) { // if there are any department filters
 
@@ -213,17 +184,13 @@ export default class App extends React.Component<IAppProps, IAppState> {
             f_nospaces = f_nospaces.map(n => {
                return n.replace(/ /g, '');
             });
-            console.log('%c : handler_filterPanel -> f_nospaces', 'color:yellow;background-color:black', f_nospaces);
 
             d_state = d_props.filter(option => f_nospaces.indexOf(option.department) > -1); // only options from the ORIGINAL division options that are in the array of department filters
-            console.log('%c App -> handler_filterPanel -> d_state', 'background-color:darkviolet', d_state);
             o_state = o_props.filter(option => f_nospaces.indexOf(option.department) > -1); // only options from the ORIGINAL org options that are in the array of department filters
-            console.log('%c App -> handler_filterPanel -> o_state', 'background-color:darkviolet', o_state);
          }
          else { // if there are NO department filters
             d_state = d_props; // reset division options
             o_state = o_props; // reset org options
-            console.log('%c should show all divisions and organizations now', 'color:yellow');
          }
 
          this.setState({
@@ -236,7 +203,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          });
       }
 
-
       else if (event == 'division') {
          let f = this.state.filter_division ? JSON.parse(JSON.stringify(this.state.filter_division)) : [];
          const o_props = JSON.parse(JSON.stringify(this.props.options_organization));
@@ -246,28 +212,24 @@ export default class App extends React.Component<IAppProps, IAppState> {
             f.push(value1);
          }
          else {
-            f = f.filter(option => option != value1.replace(/ /g, ''));
+            f = f.filter(option => option != value1);
          }
-         console.log('TCL: App -> handler_filterPanel -> f', f);
 
          if (f.length) {
             let f_nospaces = JSON.parse(JSON.stringify(f));
             f_nospaces = f_nospaces.map(n => {
                return n.replace(/ /g, '');
             });
-            console.log('%c : handler_filterPanel -> f_nospaces', 'color:yellow;background-color:black', f_nospaces);
-            o_state = o_props.filter(option => f_nospaces.indexOf(option.division) > -1/*  && f.indexOf(option.department) > -1 */);
-            console.log('TCL: App -> handler_filterPanel -> o_state', o_state);
+            o_state = o_props.filter(option => f_nospaces.indexOf(option.division) > -1);
          }
          else {
             const fd = this.state.filter_department ? JSON.parse(JSON.stringify(this.state.filter_department)) : null;
-            const fd_nospaces = fd ? fd.map(n => {
-               return n.replace(/ /g, '');
-            })
+            const fd_nospaces = fd ?
+               fd.map(n => {
+                  return n.replace(/ /g, '');
+               })
                : null;
-            console.log('%c : handler_filterPanel -> fd_nospaces', 'color:pink;background-color:black', fd_nospaces);
-            o_state = fd_nospaces.length ? o_props.filter(option => fd_nospaces.indexOf(option.department) > -1) : o_props;
-            console.log('%c should show more/all organizations now', 'color:yellow');
+            o_state = fd_nospaces ? o_props.filter(option => fd_nospaces.indexOf(option.department) > -1) : o_props;
          }
 
          this.setState({
@@ -287,7 +249,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
          else {
             f = f.filter(option => option != value1.replace(/ /g, ''));
          }
-         console.log('TCL: App -> handler_filterPanel -> f', f);
 
          this.setState({
             filter_organization: f
@@ -297,33 +258,27 @@ export default class App extends React.Component<IAppProps, IAppState> {
       else if (event == 'apply') {
 
          let restFilters = [];
-         // let hasFilters_organization = false;
-         // let hasFilters_department = false;
-         // let hasFilters_division = false;
 
          if (this.state.filter_department) {
-            const restFilter_department = "(Company eq '" + this.state.filter_department.join("' or Company eq '") + "')";
-            restFilters.push(restFilter_department);
-            // hasFilters_department = true;
+            const restFilter_department = this.state.filter_department.length ? "(Company eq '" + this.state.filter_department.join("' or Company eq '") + "')" : null;
+            if (restFilter_department) {
+               restFilters.push(restFilter_department);
+            }
+            
          }
 
          if (this.state.filter_division) {
-            const restFilter_division = "(Division eq '" + this.state.filter_division.join("' or Division eq '") + "')";
+            const restFilter_division = this.state.filter_division.length ? "(Division eq '" + this.state.filter_division.join("' or Division eq '") + "')" : null;
             restFilters.push(restFilter_division);
-            // hasFilters_division = true;
          }
 
          if (this.state.filter_organization) {
-            const restFilter_organization = "(Organization eq '" + this.state.filter_organization.join("' or Organization eq '") + "')";
+            const restFilter_organization = this.state.filter_organization.length ? "(Organization eq '" + this.state.filter_organization.join("' or Organization eq '") + "')" : null;
             restFilters.push(restFilter_organization);
-            // hasFilters_organization = true;
          }
 
          this.setState({
             filter_panel: restFilters.join(' and '),
-            // hasFilters_department: hasFilters_department,
-            // hasFilters_division: hasFilters_division,
-            // hasFilters_organization: hasFilters_organization
          }, () => {
             this.getResults();
          });
@@ -345,7 +300,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
    }
 
    public handler_list = (value) => {
-      console.log('%c  App -> handler_list -> value', 'color:yellow', value);
       this.setState({
          order: value
       }, () => {
@@ -353,17 +307,14 @@ export default class App extends React.Component<IAppProps, IAppState> {
       });
    }
 
-
    public getResults() {
 
       if (this.state.filter_search.length) {
          const select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone';
          const orderBy = this.state.order;
          const orderByAsc = true;
-         console.log('%c : getResults -> orderBy', 'color:hotpink', orderBy);
 
 
-         console.log('%c : getResults -> this.state.filter_search', 'color:hotpink', this.state.filter_search);
 
          let filter_pre_array = [];
          if (this.props.prefilter_key_department && this.props.prefilter_key_department != 'NoFilter') {
@@ -372,25 +323,20 @@ export default class App extends React.Component<IAppProps, IAppState> {
          if (this.props.prefilter_key_division && this.props.prefilter_key_division != 'NoFilter') {
             filter_pre_array.push("Division eq '" + this.props.prefilter_label_division + "'");
          }
-         console.log('%c : getResults -> filter_pre_array', 'color:lime', filter_pre_array);
          const filter_pre_string = filter_pre_array.length > 1 ? filter_pre_array.join(' and ') : filter_pre_array[0] || null;
-         console.log('%c : getResults -> filter_pre_string', 'color:lime', filter_pre_string);
 
 
          let filter_panel_array = [];
          if (this.state.filter_panel) {
             filter_panel_array.push(this.state.filter_panel);
          }
-         console.log('%c : getResults -> filter_panel_array', 'color:lime', filter_panel_array);
          const filter_panel_string = filter_panel_array.length > 1 ? filter_panel_array.join(' and ') : filter_panel_array[0] || null;
-         console.log('%c : getResults -> filter_panel_string', 'color:lime', filter_panel_string);
-         
+
          let filter_array = [this.state.filter_search];
          if (filter_panel_string) { filter_array.push(filter_panel_string); }
          if (filter_pre_string) { filter_array.push(filter_pre_string); }
 
          const filter = filter_array.length > 1 ? filter_array.join(' and ') : this.state.filter_search;
-         console.log('%c : getResults -> filter', 'color:aqua', filter);
 
          const theWeb = new Web(this.props.context.pageContext.web.absoluteUrl);
          const theList = theWeb.lists.getByTitle('EmployeeContactList');
@@ -458,7 +404,6 @@ export default class App extends React.Component<IAppProps, IAppState> {
                      handler={this.handler_list}
                      items={this.state.items}
                      searchTerms={this.state.searchTerms}
-                     // order={this.state.order}
                      show_organization={this.props.show_organization}
                      show_department={this.props.show_department}
                      show_division={this.props.show_division}

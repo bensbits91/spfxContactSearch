@@ -5,7 +5,7 @@ import Card from './Card';
 
 
 
-/* export  */interface IGridProps {
+interface IGridProps {
    items?: any;
    searchTerms: string;
    size?: string;
@@ -14,7 +14,7 @@ import Card from './Card';
    show_organization: boolean;
 }
 
-/* export  */interface IGridState {
+interface IGridState {
 
 }
 

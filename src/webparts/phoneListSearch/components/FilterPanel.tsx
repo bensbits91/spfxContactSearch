@@ -6,7 +6,7 @@ import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
 
 
 
-/* export  */interface IFilterPanelProps {
+interface IFilterPanelProps {
    handler: any;
    showPanel: boolean;
 
@@ -24,7 +24,7 @@ import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
    filter_organization?: any;
 }
 
-/* export  */interface IFilterPanelState {
+interface IFilterPanelState {
 
 }
 

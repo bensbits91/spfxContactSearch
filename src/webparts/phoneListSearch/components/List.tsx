@@ -4,7 +4,7 @@ import { buildColumns, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 
 
-/* export  */interface IResult {
+interface IResult {
    key: string;
    FirstName: string;
    Title: string;
@@ -19,7 +19,7 @@ import { Link } from 'office-ui-fabric-react/lib/Link';
    CellPhone: string;
 }
 
-/* export  */interface IListProp {
+interface IListProp {
    handler: any;
    items?: IResult[];
    searchTerms?: any;
@@ -28,13 +28,9 @@ import { Link } from 'office-ui-fabric-react/lib/Link';
    show_organization: boolean;
 }
 
-/* export  */interface IListState {
+interface IListState {
    columns: IColumn[];
 }
-
-// might be able to make this component stateless by moving _buildColumns to App.tsx  <------------------------------------------------
-
-
 
 
 export default class List extends React.Component<IListProp, IListState> {

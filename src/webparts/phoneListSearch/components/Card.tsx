@@ -6,7 +6,7 @@ import styles from './PhoneListSearch.module.scss';
 
 
 
-/* export  */interface ICardProps {
+interface ICardProps {
    item?: any;
    searchTerms: string;
    size?: string;
@@ -15,7 +15,7 @@ import styles from './PhoneListSearch.module.scss';
    show_organization: boolean;
 }
 
-/* export  */interface ICardState {
+interface ICardState {
 
 }
 

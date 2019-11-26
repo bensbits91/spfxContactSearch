@@ -3,12 +3,12 @@ import { debounce } from 'lodash';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 
 
-/* export  */interface ISearchProps {
+interface ISearchProps {
    handler: any;
    searchBoxPlaceholder: string;
  }
  
- /* export  */interface ISearchState {
+ interface ISearchState {
 
  }
  

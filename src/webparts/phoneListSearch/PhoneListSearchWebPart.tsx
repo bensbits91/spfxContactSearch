@@ -111,9 +111,9 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
          propPaneDivisions = JSON.parse(JSON.stringify(this.properties.options_division));
          propPaneDivisions.unshift(blankOption);
          
-      }).then(() => {
-         console.clear();
-         console.log('%c PhoneListSearchWebPart -> this.properties', 'color:aqua', this.properties);
+      // }).then(() => {
+      //    console.clear();
+      //    console.log('%c PhoneListSearchWebPart -> this.properties', 'color:aqua', this.properties);
       });
       
       return this.getOptionsPromise;
@@ -125,16 +125,24 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
 
    public render(): void {
 
-      console.log('%c  PhoneListSearchWebPart -> this.properties', 'color:lime', this.properties);
+
+      let newoptions_division = JSON.parse(JSON.stringify(this.properties.options_division));
+
+      let newoptions_organization = JSON.parse(JSON.stringify(availOrganizationsObject));
 
       if (this.properties.options_department) {
          if (this.properties.prefilter_key_department) {
             if (this.properties.prefilter_key_department != 'NoFilter') {
+
                const newDeparmentLabel = this.properties.options_department.find(obj => obj.key == this.properties.prefilter_key_department).text;
                update(this.properties, 'prefilter_label_department', (): any => { return newDeparmentLabel; });
-               const newoptions_division = JSON.parse(JSON.stringify(this.properties.options_division)).filter(option => option.department == this.properties.prefilter_key_department);
+
+               newoptions_division = newoptions_division.filter(option => option.department == this.properties.prefilter_key_department);
                propPaneDivisions = JSON.parse(JSON.stringify(newoptions_division));
                propPaneDivisions.unshift(blankOption);
+
+               newoptions_organization = newoptions_organization.filter(option => option.department == this.properties.prefilter_key_department);
+
             }
             else {
                update(this.properties, 'prefilter_label_department', (): any => { return ''; });
@@ -147,6 +155,9 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
             if (this.properties.prefilter_key_division != 'NoFilter') {
                const newDivisionLabel = this.properties.options_division.find(obj => obj.key == this.properties.prefilter_key_division).text;
                update(this.properties, 'prefilter_label_division', (): any => { return newDivisionLabel; });
+
+               newoptions_organization = newoptions_organization.filter(option => option.division == this.properties.prefilter_key_division);
+
             }
             else {
                update(this.properties, 'prefilter_label_division', (): any => { return ''; });
@@ -172,8 +183,8 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
             prefilter_label_division={this.properties.prefilter_label_division}
 
             options_department={this.properties.options_department}
-            options_division={this.properties.options_division}
-            options_organization={availOrganizationsObject}
+            options_division={newoptions_division}
+            options_organization={newoptions_organization}
          />
       </div>;
 
