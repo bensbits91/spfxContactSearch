@@ -70,15 +70,13 @@ export default class List extends React.Component<IListProp, IListState> {
       );
    }
 
-   public _renderItemColumn(item: IResult, index: number, column: IColumn/* , searchTerms: any */) {
+   public _renderItemColumn(item: IResult, index: number, column: IColumn) {
       const searchTermsToHighlight = this.props.searchTerms;
 
       let highlightHits = (str) => {
-         for (let term of searchTermsToHighlight) {
-            const searchTermRegex = new RegExp(term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "ig");
+            const searchTermRegex = new RegExp(searchTermsToHighlight.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "ig");
             const searchTermHighlighted = '<span style="background-color:yellow;">$&</span>';
             str = str.replace(searchTermRegex, searchTermHighlighted);
-         }
          return str;
       };
 

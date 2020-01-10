@@ -32,11 +32,9 @@ export default class Card extends React.Component<ICardProps, ICardState> {
    public render() {
       const searchTerms = this.props.searchTerms;
       let highlightHits = (str) => {
-         for (let term of searchTerms) {
-            const searchTermRegex = new RegExp(term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "ig");
-            const searchTermHighlighted = '<span style="background-color:yellow;">$&</span>';
-            str = str.replace(searchTermRegex, searchTermHighlighted);
-         }
+         const searchTermRegex = new RegExp(searchTerms.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "ig");
+         const searchTermHighlighted = '<span style="background-color:yellow;">$&</span>';
+         str = str.replace(searchTermRegex, searchTermHighlighted);
          return str;
       };
 
@@ -49,7 +47,7 @@ export default class Card extends React.Component<ICardProps, ICardState> {
             <div className={styles.contactItemImg}>
                <Link href={"https://delve-gcc.office.com/?p=" + this.props.item.Email + "&v=work"} target="about:blank">
                   <PersonaCoin
-                     text={this.props.item.FirstName ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title}
+                     text={this.props.item.FullName ? this.props.item.FullName : this.props.item.FirstName ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title}
                      coinSize={this.props.size == 'large' ? 100 : 50}
                      showInitialsUntilImageLoads={true}
                   />
@@ -60,7 +58,7 @@ export default class Card extends React.Component<ICardProps, ICardState> {
                   <Link href={"https://delve-gcc.office.com/?p=" + this.props.item.Email + "&v=work"} target="about:blank">
                      <div className={[styles.contactItemFullName, styles.contactItemFieldBody].join(' ')}
                         dangerouslySetInnerHTML={{
-                           __html: highlightHits(this.props.item.FirstName ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title)
+                           __html: highlightHits(this.props.item.FullName ? this.props.item.FullName : this.props.item.FirstName ? this.props.item.FirstName + ' ' + this.props.item.Title : this.props.item.Title)
                         }}
                      />
                   </Link>

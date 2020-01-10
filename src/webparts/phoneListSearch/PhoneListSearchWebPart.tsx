@@ -54,6 +54,7 @@ export default class PhoneListSearchWebPart extends BaseClientSideWebPart<IPhone
       const select = 'Company,Division,Organization';
 
       this.getOptionsPromise = theList.items.select(select).getAll().then(items => {
+         console.clear();
          console.log('TCL: PhoneListSearchWebPart -> items', items);
 
          let departmentsTempArray = [];

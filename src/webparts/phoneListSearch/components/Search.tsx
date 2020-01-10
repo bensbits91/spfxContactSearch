@@ -27,6 +27,7 @@ interface ISearchProps {
  
    public handleChange = debounce(e => {
      if (e.length) {
+      console.log('%c : Search -> e', 'color:yellow', e);
       this.props.handler(e);
      }
    }, 1000);

@@ -68,26 +68,15 @@ export default class App extends React.Component<IAppProps, IAppState> {
       this.handler_list = this.handler_list.bind(this);
    }
 
-   // public componentDidUpdate(previousProps: IAppProps, previousState: IAppState) {
-   //    console.log('%c App -> componentDidUpdate -> previousProps', 'color:cyan', previousProps);
-   //    console.log('%c App -> componentDidUpdate -> this.props', 'color:cyan', this.props);
-   //    console.log('%c App -> componentDidUpdate -> previousState', 'color:cyan', previousState);
-   //    console.log('%c App -> componentDidUpdate -> this.state', 'color:cyan', this.state);
-   //    console.log('%c App -> componentDidUpdate -> this.state.filter_search', 'color:orange', this.state.filter_search);
-   //    console.log('%c App -> componentDidUpdate -> this.state.filter_panel', 'color:orange', this.state.filter_panel);
-   //    console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_department', 'color:orange', this.props.prefilter_key_department);
-   //    console.log('%c App -> componentDidUpdate -> this.state.prefilter_key_division', 'color:orange', this.props.prefilter_key_division);
-   // }
-
    public handler_searchBox = (e) => {
-      const terms = e ? e.constructor === Array ? e : e.split(' ') : null;
-
-      if (terms) {
+      let searchTrim = e.trim();
+      if (searchTrim) {
          const searchFields = [
             'Title',
             'FirstName',
             'JobTitle',
-            'Program'
+            'Program',
+            'FullName'
          ];
          if (!this.state.filter_department && this.props.show_department) {
             searchFields.push('Company');
@@ -100,32 +89,25 @@ export default class App extends React.Component<IAppProps, IAppState> {
          }
          let filter_search_temp = [];
          let filter_search: string;
-
-         terms.map(term => {
-            const term_uri = encodeURIComponent(term).replace(/'/g, '%27%27');
-            let theseTerms = [];
-            for (let field of searchFields) {
-               theseTerms.push("substringof('" + term_uri + "'," + field + ")");
-            }
-            filter_search_temp.push(theseTerms.join(' or '));
-            filter_search = "(" + filter_search_temp.join(' and ') + ")";
-         });
+         let theseTerms = [];
+         for (let field of searchFields) {
+            theseTerms.push("substringof('" + searchTrim + "'," + field + ")");
+         }
+         filter_search_temp.push(theseTerms.join(' or '));
+         filter_search = "(" + filter_search_temp.join(' and ') + ")";
 
          this.setState({
             filter_search: filter_search,
-            searchTerms: terms
+            searchTerms: searchTrim
          }, () => {
             this.getResults();
          });
-
-
       }
       else {
          this.setState({
             searchTerms: null
          });
       }
-
    }
 
    public handler_commands = (event, value) => {
@@ -264,7 +246,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
             if (restFilter_department) {
                restFilters.push(restFilter_department);
             }
-            
+
          }
 
          if (this.state.filter_division) {
@@ -309,12 +291,11 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
    public getResults() {
 
-      if (this.state.filter_search.length) {
-         const select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone';
+      if (this.state.filter_search) {
+         console.log('%c : getResults -> this.state.filter_search', 'color:green', this.state.filter_search);
+         const select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone,FullName';
          const orderBy = this.state.order;
          const orderByAsc = true;
-
-
 
          let filter_pre_array = [];
          if (this.props.prefilter_key_department && this.props.prefilter_key_department != 'NoFilter') {
@@ -337,12 +318,14 @@ export default class App extends React.Component<IAppProps, IAppState> {
          if (filter_pre_string) { filter_array.push(filter_pre_string); }
 
          const filter = filter_array.length > 1 ? filter_array.join(' and ') : this.state.filter_search;
+         console.log('%c : getResults -> filter', 'color:aqua', filter);
 
          const theWeb = new Web(this.props.context.pageContext.web.absoluteUrl);
          const theList = theWeb.lists.getByTitle('EmployeeContactList');
          const theItems = theList.items.select(select).orderBy(orderBy, orderByAsc).filter(filter).top(500);
 
          theItems.get().then(items => {
+            console.log('%c : getResults -> items', 'color:red', items);
             this.setState({
                items: items
             });
