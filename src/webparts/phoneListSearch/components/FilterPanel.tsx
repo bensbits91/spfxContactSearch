@@ -94,21 +94,24 @@ export default class FilterPanel extends React.Component<IFilterPanelProps, IFil
       let selectedKeys_department = [];
       if (this.props.filter_department) {
          this.props.filter_department.map(f => {
-            selectedKeys_department.push(f.replace(/ /g, ''));
+            const fAmp = f.replace(/%26/g, '&');
+            selectedKeys_department.push(fAmp.replace(/ /g, ''));
          });
       }
 
       let selectedKeys_division = [];
       if (this.props.filter_division) {
          this.props.filter_division.map(f => {
-            selectedKeys_division.push(f.replace(/ /g, ''));
+            const fAmp = f.replace(/%26/g, '&');
+            selectedKeys_division.push(fAmp.replace(/ /g, ''));
          });
       }
 
       let selectedKeys_organization = [];
       if (this.props.filter_organization) {
          this.props.filter_organization.map(f => {
-            selectedKeys_organization.push(f.replace(/ /g, ''));
+            const fAmp = f.replace(/%26/g, '&');
+            selectedKeys_organization.push(fAmp.replace(/ /g, ''));
          });
       }
 

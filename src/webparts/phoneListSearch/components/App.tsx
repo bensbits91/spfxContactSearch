@@ -1,4 +1,5 @@
 import * as React from 'react';
+import '@pnp/polyfill-ie11';
 import { Web } from '@pnp/sp';
 
 import Search from './Search';
@@ -70,6 +71,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
    public handler_searchBox = (e) => {
       let searchTrim = e.trim();
+      console.log('%c : App -> publichandler_searchBox -> searchTrim', 'color:lime', searchTrim);
       if (searchTrim) {
          const searchFields = [
             'Title',
@@ -291,6 +293,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
    public getResults() {
 
+      console.log('%c : App -> getResults -> this.state', this.state);
       if (this.state.filter_search) {
          console.log('%c : getResults -> this.state.filter_search', 'color:green', this.state.filter_search);
          const select = 'Id,Title,FirstName,Email,Company,JobTitle,WorkPhone,WorkAddress,Division,Program,Organization,CellPhone,FullName';
@@ -316,7 +319,8 @@ export default class App extends React.Component<IAppProps, IAppState> {
          let filter_array = [this.state.filter_search];
          if (filter_panel_string) { filter_array.push(filter_panel_string); }
          if (filter_pre_string) { filter_array.push(filter_pre_string); }
-
+         console.log('%c : App -> getResults -> filter_array', 'color:lime', filter_array);
+         
          const filter = filter_array.length > 1 ? filter_array.join(' and ') : this.state.filter_search;
          console.log('%c : getResults -> filter', 'color:aqua', filter);
 

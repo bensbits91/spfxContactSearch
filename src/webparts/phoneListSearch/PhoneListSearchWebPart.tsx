@@ -1,3 +1,5 @@
+
+
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
@@ -8,9 +10,15 @@ import PhoneListSearch from './components/PhoneListSearch';
 import { IPhoneListSearchProps } from './components/IPhoneListSearchProps';
 import styles from './components/PhoneListSearch.module.scss';
 import { update } from '@microsoft/sp-lodash-subset';
+import '@pnp/polyfill-ie11';
 import { Web } from '@pnp/sp';
 import App from './components/App';
 import './components/temp.css';
+
+// polyfills for IE11
+import 'core-js/features/array/from';
+import 'core-js/features/array/filter';
+import 'regenerator-runtime/runtime';
 
 export interface IPhoneListSearchWebPartProps {
    appHeading: string;
