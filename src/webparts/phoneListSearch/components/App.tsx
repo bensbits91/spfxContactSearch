@@ -70,7 +70,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
    }
 
    public handler_searchBox = (e) => {
-      let searchTrim = e.trim();
+      let searchTrim = e ? e.trim() : null;
       console.log('%c : App -> publichandler_searchBox -> searchTrim', 'color:lime', searchTrim);
       if (searchTrim) {
          const searchFields = [
